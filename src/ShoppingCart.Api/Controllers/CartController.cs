@@ -12,17 +12,10 @@ namespace ShoppingCart.Api.Controllers;
 public class CartController : ControllerBase
 {
     private readonly ICartService _cartService;
-    private readonly IValidator<AddToCartRequest> _addToCartValidator;
-    private readonly IValidator<ApplyCouponRequest> _couponValidator;
 
-    public CartController(
-        ICartService cartService,
-        IValidator<AddToCartRequest> addToCartValidator,
-        IValidator<ApplyCouponRequest> couponValidator)
+    public CartController(ICartService cartService)
     {
         _cartService = cartService;
-        _addToCartValidator = addToCartValidator;
-        _couponValidator = couponValidator;
     }
 
     private (int? CustomerId, string? SessionId) GetIdentifiers()
@@ -55,15 +48,6 @@ public class CartController : ControllerBase
     [HttpPost("items")]
     public async Task<ActionResult<ApiResponse<CartDto>>> AddToCart([FromBody] AddToCartRequest request)
     {
-        var validationResult = await _addToCartValidator.ValidateAsync(request);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(ApiResponse<CartDto>.Fail(
-                "Validation failed",
-                400,
-                validationResult.Errors.Select(e => e.ErrorMessage).ToList()));
-        }
-
         var (customerId, sessionId) = GetIdentifiers();
         var cart = await _cartService.AddToCartAsync(customerId, sessionId, request);
         return Ok(ApiResponse<CartDto>.Success(cart, "Item added to cart"));
@@ -97,15 +81,6 @@ public class CartController : ControllerBase
     [HttpPost("coupon")]
     public async Task<ActionResult<ApiResponse<CartDto>>> ApplyCoupon([FromBody] ApplyCouponRequest request)
     {
-        var validationResult = await _couponValidator.ValidateAsync(request);
-        if (!validationResult.IsValid)
-        {
-            return BadRequest(ApiResponse<CartDto>.Fail(
-                "Validation failed",
-                400,
-                validationResult.Errors.Select(e => e.ErrorMessage).ToList()));
-        }
-
         var (customerId, sessionId) = GetIdentifiers();
         var cart = await _cartService.ApplyCouponAsync(customerId, sessionId, request);
         return Ok(ApiResponse<CartDto>.Success(cart, "Coupon applied"));

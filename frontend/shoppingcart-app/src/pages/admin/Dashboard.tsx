@@ -1,32 +1,27 @@
 import { useQuery } from '@tanstack/react-query'
-import { BarChart3, DollarSign, ShoppingCart, Package, Users, TrendingUp, TrendingDown } from 'lucide-react'
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
+import { DollarSign, ShoppingCart, Package, Users, TrendingUp, TrendingDown } from 'lucide-react'
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import api from '../../services/api'
 
 export default function AdminDashboard() {
-  const { data: stats } = useQuery({
-    queryKey: ['dashboardStats'],
-    queryFn: async () => ({
-      totalProducts: 156,
-      lowStockProducts: 12,
-      totalOrders: 89,
-      pendingOrders: 5,
-      todayRevenue: 45890,
-      monthlyRevenue: 1256780,
-      newCustomers: 23,
-      recentOrders: [
-        { id: 1, orderNumber: 'ORD-2024-000001', customer: 'John Doe', amount: 2450, status: 'Pending', date: '2024-03-20' },
-        { id: 2, orderNumber: 'ORD-2024-000002', customer: 'Jane Smith', amount: 1890, status: 'Processing', date: '2024-03-20' },
-        { id: 3, orderNumber: 'ORD-2024-000003', customer: 'Bob Wilson', amount: 3200, status: 'Delivered', date: '2024-03-19' },
-      ],
-      topProducts: [
-        { name: 'Product A', sold: 45, revenue: 22500 },
-        { name: 'Product B', sold: 38, revenue: 19000 },
-        { name: 'Product C', sold: 32, revenue: 16000 },
-        { name: 'Product D', sold: 28, revenue: 14000 },
-        { name: 'Product E', sold: 25, revenue: 12500 },
-      ]
-    }),
+  const { data: ordersData } = useQuery({
+    queryKey: ['dashboard-orders'],
+    queryFn: async () => {
+      const response = await api.get('/orders?pageIndex=0&pageSize=5')
+      return response.data.data.items
+    }
   })
+
+  const { data: productsData } = useQuery({
+    queryKey: ['dashboard-products'],
+    queryFn: async () => {
+      const response = await api.get('/products?pageIndex=0&pageSize=1')
+      return response.data.data.totalCount
+    }
+  })
+
+  const recentOrders = ordersData || []
+  const totalProducts = productsData || 0
 
   const revenueData = [
     { name: 'Mon', revenue: 4000 },
@@ -67,29 +62,23 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard
           icon={DollarSign}
-          label="Today's Revenue"
-          value={`Tk ${stats?.todayRevenue.toLocaleString()}`}
-          trend="up"
-          trendValue="12.5%"
+          label="Total Orders"
+          value={recentOrders.length}
         />
         <StatCard
           icon={ShoppingCart}
           label="Pending Orders"
-          value={stats?.pendingOrders || 0}
-          trend="down"
-          trendValue="3.2%"
+          value={recentOrders.filter((o: any) => o.status === 'Pending').length}
         />
         <StatCard
           icon={Package}
-          label="Low Stock Items"
-          value={stats?.lowStockProducts || 0}
+          label="Total Products"
+          value={totalProducts}
         />
         <StatCard
           icon={Users}
-          label="New Customers"
-          value={stats?.newCustomers || 0}
-          trend="up"
-          trendValue="8.1%"
+          label="Active Customers"
+          value="-"
         />
       </div>
 
@@ -117,24 +106,6 @@ export default function AdminDashboard() {
             </ResponsiveContainer>
           </div>
         </div>
-
-        {/* Top Products */}
-        <div className="card p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Top Selling Products</h3>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={stats?.topProducts} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis type="number" stroke="#6b7280" />
-                <YAxis dataKey="name" type="category" stroke="#6b7280" width={80} />
-                <Tooltip 
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                />
-                <Bar dataKey="revenue" fill="#3b82f6" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
       </div>
 
       {/* Recent Orders */}
@@ -142,38 +113,42 @@ export default function AdminDashboard() {
         <div className="p-6 border-b border-gray-200">
           <h3 className="text-lg font-semibold text-gray-900">Recent Orders</h3>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {stats?.recentOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">{order.orderNumber}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{order.customer}</td>
-                  <td className="px-6 py-4 text-sm font-medium text-gray-900">Tk {order.amount.toLocaleString()}</td>
-                  <td className="px-6 py-4">
-                    <span className={`badge ${
-                      order.status === 'Delivered' ? 'badge-success' :
-                      order.status === 'Processing' ? 'badge-info' :
-                      order.status === 'Pending' ? 'badge-warning' : 'badge-danger'
-                    }`}>
-                      {order.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{order.date}</td>
+        {recentOrders.length === 0 ? (
+          <div className="p-6 text-center text-gray-500">No orders found</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {recentOrders.map((order: any) => (
+                  <tr key={order.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900">{order.orderNumber}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{order.customerName}</td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900">Tk {order.totalAmount?.toLocaleString()}</td>
+                    <td className="px-6 py-4">
+                      <span className={`badge ${
+                        order.status === 'Delivered' ? 'badge-success' :
+                        order.status === 'Processing' ? 'badge-info' :
+                        order.status === 'Pending' ? 'badge-warning' : 'badge-danger'
+                      }`}>
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-500">{new Date(order.orderDate).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   )
