@@ -30,65 +30,78 @@ public class ReportsController : ControllerBase
         var startDate = DateTime.UtcNow.AddDays(-30);
         var endDate = DateTime.UtcNow;
 
-        var totalRevenue = await _context.Orders
-            .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate && o.Status != OrderStatus.Cancelled)
-            .SumAsync(o => o.TotalAmount);
-
-        var totalOrders = await _context.Orders
-            .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate)
-            .CountAsync();
-
-        var totalProducts = await _context.Products.Where(p => p.IsActive && !p.IsDeleted).CountAsync();
-        var totalCustomers = await _context.Customers.CountAsync();
-
-        var pendingOrders = await _context.Orders
-            .Where(o => o.Status == OrderStatus.Pending || o.Status == OrderStatus.Confirmed)
-            .CountAsync();
-
-        var lowStockProducts = await _context.Products
-            .Where(p => p.IsActive && !p.IsDeleted && p.MinimumStockLevel > 0)
-            .CountAsync();
-
-        var recentOrders = await _context.Orders
-            .Include(o => o.Customer).ThenInclude(c => c.User)
-            .OrderByDescending(o => o.CreatedAt)
-            .Take(5)
-            .Select(o => new RecentOrderDto
-            {
-                Id = o.Id,
-                OrderNumber = o.OrderNumber,
-                CustomerName = o.Customer != null && o.Customer.User != null ? $"{o.Customer.User.FirstName} {o.Customer.User.LastName}" : "Guest",
-                TotalAmount = o.TotalAmount,
-                Status = o.Status.ToString(),
-                CreatedAt = o.CreatedAt
-            })
-            .ToListAsync();
-
-        var dailySales = await _context.Orders
-            .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate && o.Status != OrderStatus.Cancelled)
-            .GroupBy(o => o.OrderDate.Date)
-            .Select(g => new DailySalesChartDto
-            {
-                Date = g.Key.ToString("yyyy-MM-dd"),
-                Revenue = g.Sum(o => o.TotalAmount),
-                Orders = g.Count()
-            })
-            .OrderBy(d => d.Date)
-            .ToListAsync();
-
-        var summary = new DashboardSummaryDto
+        try
         {
-            TotalRevenue = totalRevenue,
-            TotalOrders = totalOrders,
-            TotalProducts = totalProducts,
-            TotalCustomers = totalCustomers,
-            LowStockProducts = lowStockProducts,
-            PendingOrders = pendingOrders,
-            RecentOrders = recentOrders,
-            SalesData = dailySales
-        };
+            var totalRevenue = await _context.Orders
+                .IgnoreQueryFilters()
+                .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate && o.Status != OrderStatus.Cancelled)
+                .SumAsync(o => o.TotalAmount);
 
-        return Ok(ApiResponse<DashboardSummaryDto>.Success(summary));
+            var totalOrders = await _context.Orders
+                .IgnoreQueryFilters()
+                .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate)
+                .CountAsync();
+
+            var totalProducts = await _context.Products.IgnoreQueryFilters().Where(p => p.IsActive && !p.IsDeleted).CountAsync();
+            var totalCustomers = await _context.Customers.CountAsync();
+
+            var pendingOrders = await _context.Orders
+                .IgnoreQueryFilters()
+                .Where(o => o.Status == OrderStatus.Pending || o.Status == OrderStatus.Confirmed)
+                .CountAsync();
+
+            var lowStockProducts = await _context.Products
+                .IgnoreQueryFilters()
+                .Where(p => p.IsActive && !p.IsDeleted)
+                .CountAsync();
+
+            var recentOrders = await _context.Orders
+                .IgnoreQueryFilters()
+                .Include(o => o.Customer).ThenInclude(c => c.User)
+                .OrderByDescending(o => o.CreatedAt)
+                .Take(5)
+                .Select(o => new RecentOrderDto
+                {
+                    Id = o.Id,
+                    OrderNumber = o.OrderNumber,
+                    CustomerName = o.Customer != null && o.Customer.User != null ? $"{o.Customer.User.FirstName} {o.Customer.User.LastName}" : "Guest",
+                    TotalAmount = o.TotalAmount,
+                    Status = o.Status.ToString(),
+                    CreatedAt = o.CreatedAt
+                })
+                .ToListAsync();
+
+            var dailySales = await _context.Orders
+                .IgnoreQueryFilters()
+                .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate && o.Status != OrderStatus.Cancelled)
+                .GroupBy(o => o.OrderDate.Date)
+                .Select(g => new DailySalesChartDto
+                {
+                    Date = g.Key.ToString("yyyy-MM-dd"),
+                    Revenue = g.Sum(o => o.TotalAmount),
+                    Orders = g.Count()
+                })
+                .OrderBy(d => d.Date)
+                .ToListAsync();
+
+            var summary = new DashboardSummaryDto
+            {
+                TotalRevenue = totalRevenue,
+                TotalOrders = totalOrders,
+                TotalProducts = totalProducts,
+                TotalCustomers = totalCustomers,
+                LowStockProducts = lowStockProducts,
+                PendingOrders = pendingOrders,
+                RecentOrders = recentOrders,
+                SalesData = dailySales
+            };
+
+            return Ok(ApiResponse<DashboardSummaryDto>.Success(summary));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ApiResponse<DashboardSummaryDto>.Fail($"Error: {ex.Message}"));
+        }
     }
 
     [HttpGet("sales")]

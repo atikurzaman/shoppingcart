@@ -8,6 +8,9 @@ import Products from './pages/customer/Products'
 import Cart from './pages/customer/Cart'
 import Login from './pages/customer/Login'
 import Register from './pages/customer/Register'
+import Account from './pages/customer/Account'
+import Orders from './pages/customer/Orders'
+import Wishlist from './pages/customer/Wishlist'
 import Checkout from './pages/customer/Checkout'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminProducts from './pages/admin/Products'
@@ -40,6 +43,9 @@ function App() {
         <Route path="/products" element={<Products />} />
         <Route path="/products/:slug" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/account" element={<Account />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

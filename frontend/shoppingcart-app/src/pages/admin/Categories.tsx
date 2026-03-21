@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, Search, Edit, Trash2, Star, StarOff, X } from 'lucide-react'
+import { Plus, Search, Edit, Trash2, Star, StarOff, ArrowLeft } from 'lucide-react'
 import api from '../../services/api'
 import toast from 'react-hot-toast'
 
@@ -18,6 +18,7 @@ interface Category {
 interface CategoryFormData {
   name: string
   description: string
+  parentCategoryId?: number
   displayOrder: number
   isFeatured: boolean
   isActive: boolean
@@ -27,11 +28,12 @@ export default function AdminCategories() {
   const [searchTerm, setSearchTerm] = useState('')
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(false)
-  const [showModal, setShowModal] = useState(false)
+  const [showForm, setShowForm] = useState(false)
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
   const [formData, setFormData] = useState<CategoryFormData>({
     name: '',
     description: '',
+    parentCategoryId: undefined,
     displayOrder: 0,
     isFeatured: false,
     isActive: true,
@@ -47,6 +49,7 @@ export default function AdminCategories() {
       setFormData({
         name: editingCategory.name,
         description: editingCategory.description || '',
+        parentCategoryId: editingCategory.parentCategoryId,
         displayOrder: editingCategory.displayOrder,
         isFeatured: editingCategory.isFeatured,
         isActive: editingCategory.isActive,
@@ -55,6 +58,7 @@ export default function AdminCategories() {
       setFormData({
         name: '',
         description: '',
+        parentCategoryId: undefined,
         displayOrder: 0,
         isFeatured: false,
         isActive: true,
@@ -85,7 +89,7 @@ export default function AdminCategories() {
         await api.post('/categories', formData)
         toast.success('Category created successfully')
       }
-      setShowModal(false)
+      setShowForm(false)
       setEditingCategory(null)
       fetchCategories()
     } catch (error: any) {
@@ -117,13 +121,134 @@ export default function AdminCategories() {
     }
   }
 
-  const openModal = (category?: Category) => {
+  const openForm = (category?: Category) => {
     if (category) {
       setEditingCategory(category)
     } else {
       setEditingCategory(null)
     }
-    setShowModal(true)
+    setShowForm(true)
+  }
+
+  if (showForm) {
+    return (
+      <div className="max-w-4xl mx-auto p-6 bg-white rounded shadow">
+        <div className="flex items-center gap-4 mb-6">
+          <button onClick={() => setShowForm(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <ArrowLeft className="h-5 w-5 text-gray-600" />
+          </button>
+          <h1 className="text-2xl font-bold text-gray-900">
+            {editingCategory ? 'Edit Category' : 'Add New Category'}
+          </h1>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <label className="block mb-1 font-medium text-sm">Category Name *</label>
+              <input
+                type="text"
+                required
+                className="input w-full"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Enter category name"
+              />
+            </div>
+            
+            <div>
+              <label className="block mb-1 font-medium text-sm">Parent Category</label>
+              <select
+                className="input w-full"
+                value={formData.parentCategoryId || ''}
+                onChange={(e) => setFormData({ ...formData, parentCategoryId: e.target.value ? parseInt(e.target.value) : undefined })}
+              >
+                <option value="">None (Top Level)</option>
+                {categories.filter(c => c.id !== editingCategory?.id).map((cat) => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block mb-1 font-medium text-sm">Display Order</label>
+              <input
+                type="number"
+                className="input w-full"
+                value={formData.displayOrder}
+                onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 0 })}
+              />
+            </div>
+            
+            <div className="md:col-span-2">
+              <label className="block mb-1 font-medium text-sm">Description</label>
+              <textarea
+                className="input w-full"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Enter description"
+                rows={3}
+              />
+            </div>
+            
+            <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex items-center justify-between p-4 border rounded-lg bg-gray-50">
+                <div>
+                  <span className="font-medium text-sm block">Featured Status</span>
+                  <span className="text-xs text-gray-500">Show in featured sections</span>
+                </div>
+                <label className="inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    className="sr-only" 
+                    checked={formData.isFeatured} 
+                    onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })} 
+                  />
+                  <div className={`w-11 h-6 bg-gray-200 rounded-full transition-colors ${formData.isFeatured ? 'bg-primary-600' : ''}`}>
+                    <div className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform mt-0.5 ml-0.5 ${formData.isFeatured ? 'translate-x-5' : ''}`}></div>
+                  </div>
+                </label>
+              </div>
+
+              <div className="flex items-center justify-between p-4 border rounded-lg bg-gray-50">
+                <div>
+                  <span className="font-medium text-sm block">Active Status</span>
+                  <span className="text-xs text-gray-500">Enable or disable category</span>
+                </div>
+                <label className="inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    className="sr-only" 
+                    checked={formData.isActive} 
+                    onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })} 
+                  />
+                  <div className={`w-11 h-6 bg-gray-200 rounded-full transition-colors ${formData.isActive ? 'bg-primary-600' : ''}`}>
+                    <div className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform mt-0.5 ml-0.5 ${formData.isActive ? 'translate-x-5' : ''}`}></div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex justify-end gap-4 pt-4 border-t mt-6">
+            <button
+              type="button"
+              className="btn-secondary px-6 py-2"
+              onClick={() => setShowForm(false)}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="btn-primary px-8 py-2 shadow-sm"
+            >
+              {isSubmitting ? 'Saving...' : (editingCategory ? 'Update Category' : 'Save Category')}
+            </button>
+          </div>
+        </form>
+      </div>
+    )
   }
 
   return (
@@ -134,7 +259,7 @@ export default function AdminCategories() {
           <p className="text-gray-500">Manage product categories</p>
         </div>
         <button 
-          onClick={() => openModal()}
+          onClick={() => openForm()}
           className="btn-primary flex items-center gap-2"
         >
           <Plus className="h-5 w-5" />
@@ -166,6 +291,7 @@ export default function AdminCategories() {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Parent</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Slug</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Order</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Featured</th>
@@ -183,6 +309,11 @@ export default function AdminCategories() {
                           <p className="text-sm text-gray-500 truncate max-w-xs">{category.description}</p>
                         )}
                       </div>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-500">
+                      {category.parentCategoryId 
+                        ? categories.find(c => c.id === category.parentCategoryId)?.name || '-' 
+                        : '-'}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">{category.slug}</td>
                     <td className="px-6 py-4 text-sm text-gray-500">{category.displayOrder}</td>
@@ -202,7 +333,7 @@ export default function AdminCategories() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <button 
-                          onClick={() => openModal(category)}
+                          onClick={() => openForm(category)}
                           className="p-1 text-gray-400 hover:text-primary-600"
                         >
                           <Edit className="h-5 w-5" />
@@ -222,79 +353,6 @@ export default function AdminCategories() {
           )}
         </div>
       </div>
-
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg w-full max-w-md">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="text-xl font-bold">
-                {editingCategory ? 'Edit Category' : 'Add Category'}
-              </h2>
-              <button onClick={() => setShowModal(false)} className="p-2 hover:bg-gray-100 rounded">
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <form onSubmit={handleSubmit} className="p-4 space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Category Name *</label>
-                <input
-                  type="text"
-                  required
-                  className="input w-full"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Description</label>
-                <textarea
-                  className="input w-full"
-                  rows={2}
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Display Order</label>
-                <input
-                  type="number"
-                  className="input w-full"
-                  value={formData.displayOrder}
-                  onChange={(e) => setFormData({ ...formData, displayOrder: parseInt(e.target.value) || 0 })}
-                />
-              </div>
-              <div className="flex items-center gap-4">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.isFeatured}
-                    onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
-                  />
-                  <span className="text-sm">Featured</span>
-                </label>
-                {editingCategory && (
-                  <label className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={formData.isActive}
-                      onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                    />
-                    <span className="text-sm">Active</span>
-                  </label>
-                )}
-              </div>
-              <div className="flex justify-end gap-2 pt-4 border-t">
-                <button type="button" onClick={() => setShowModal(false)} className="btn-secondary">
-                  Cancel
-                </button>
-                <button type="submit" disabled={isSubmitting} className="btn-primary">
-                  {isSubmitting ? 'Saving...' : 'Save'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

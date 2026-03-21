@@ -1,12 +1,16 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Plus, Search, Edit, Trash2, Eye, X } from 'lucide-react'
-import { productService, CreateProductRequest, categoryService, Category } from '../../services/productService'
+import { Plus, Search, Edit, Trash2, Eye, X, ArrowLeft, Package, Layers } from 'lucide-react'
+import { productService, CreateProductRequest, categoryService, Category, variantService, ProductVariant, CreateVariantRequest } from '../../services/productService'
+import toast from 'react-hot-toast'
 
 export default function AdminProducts() {
   const [searchTerm, setSearchTerm] = useState('')
   const [pageIndex, setPageIndex] = useState(0)
-  const [showModal, setShowModal] = useState(false)
+  const [showAddView, setShowAddView] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<any>(null)
+  const [showVariantModal, setShowVariantModal] = useState(false)
+  const [editingVariant, setEditingVariant] = useState<ProductVariant | null>(null)
 
   const queryClient = useQueryClient()
 
@@ -28,8 +32,42 @@ export default function AdminProducts() {
     mutationFn: (product: CreateProductRequest) => productService.createProduct(product),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] })
-      setShowModal(false)
+      setShowAddView(false)
     },
+  })
+
+  const createVariantMutation = useMutation({
+    mutationFn: (variant: CreateVariantRequest) => variantService.createVariant(variant),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
+      queryClient.invalidateQueries({ queryKey: ['product-variants'] })
+      setShowVariantModal(false)
+      setEditingVariant(null)
+      toast.success('Variant created successfully')
+    },
+    onError: () => toast.error('Failed to create variant'),
+  })
+
+  const updateVariantMutation = useMutation({
+    mutationFn: ({ id, variant }: { id: number; variant: any }) => variantService.updateVariant(id, variant),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
+      queryClient.invalidateQueries({ queryKey: ['product-variants'] })
+      setShowVariantModal(false)
+      setEditingVariant(null)
+      toast.success('Variant updated successfully')
+    },
+    onError: () => toast.error('Failed to update variant'),
+  })
+
+  const deleteVariantMutation = useMutation({
+    mutationFn: (id: number) => variantService.deleteVariant(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-products'] })
+      queryClient.invalidateQueries({ queryKey: ['product-variants'] })
+      toast.success('Variant deleted successfully')
+    },
+    onError: () => toast.error('Failed to delete variant'),
   })
 
   const products = data?.items || []
@@ -43,6 +81,17 @@ export default function AdminProducts() {
     }).format(price)
   }
 
+  if (showAddView) {
+    return (
+      <AddProductView 
+        categories={categories}
+        onClose={() => setShowAddView(false)}
+        onSubmit={(product) => createMutation.mutate(product)}
+        isLoading={createMutation.isPending}
+      />
+    )
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -51,7 +100,7 @@ export default function AdminProducts() {
           <p className="text-gray-500">Manage your product catalog</p>
         </div>
         <button 
-          onClick={() => setShowModal(true)}
+          onClick={() => setShowAddView(true)}
           className="btn-primary flex items-center gap-2"
         >
           <Plus className="h-5 w-5" />
@@ -146,6 +195,13 @@ export default function AdminProducts() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
+                        <button 
+                          onClick={() => { setSelectedProduct(product); setShowVariantModal(true); }}
+                          className="p-1 text-gray-400 hover:text-primary-600" 
+                          title="Manage Variants"
+                        >
+                          <Layers className="h-5 w-5" />
+                        </button>
                         <button className="p-1 text-gray-400 hover:text-primary-600">
                           <Eye className="h-5 w-5" />
                         </button>
@@ -206,19 +262,22 @@ export default function AdminProducts() {
         )}
       </div>
 
-      {showModal && (
-        <ProductModal 
-          categories={categories}
-          onClose={() => setShowModal(false)}
-          onSubmit={(product) => createMutation.mutate(product)}
-          isLoading={createMutation.isPending}
+      {showVariantModal && selectedProduct && (
+        <VariantModal
+          product={selectedProduct}
+          onClose={() => { setShowVariantModal(false); setSelectedProduct(null); }}
+          onCreateVariant={(v) => createVariantMutation.mutate(v)}
+          onUpdateVariant={(id, v) => updateVariantMutation.mutate({ id, variant: v })}
+          onDeleteVariant={(id) => deleteVariantMutation.mutate(id)}
+          isCreating={createVariantMutation.isPending}
+          isUpdating={updateVariantMutation.isPending}
         />
       )}
     </div>
   )
 }
 
-function ProductModal({ 
+function AddProductView({ 
   categories, 
   onClose, 
   onSubmit, 
@@ -246,94 +305,151 @@ function ProductModal({
     weight: 0,
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Additional UI state matching AddProduct.tsx
+  const [brand, setBrand] = useState('')
+  const [unit, setUnit] = useState('')
+  const [condition, setCondition] = useState('')
+  const [tags, setTags] = useState<string[]>([])
+  const [productType, setProductType] = useState('single')
+  const [taxProfile, setTaxProfile] = useState('GST')
+  const [refundable, setRefundable] = useState(false)
+
+  const handleTagInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && e.currentTarget.value) {
+      e.preventDefault()
+      setTags([...tags, e.currentTarget.value])
+      e.currentTarget.value = ''
+    }
+  }
+
+  const handleSubmit = (e: React.FormEvent, publish: boolean) => {
     e.preventDefault()
+    // You could map additional UI state here if your backend models are expanded in the future
     onSubmit(formData)
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-xl font-bold">Add New Product</h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded">
-            <X className="h-5 w-5" />
+    <div className="bg-white rounded shadow max-w-5xl mx-auto p-6">
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center gap-4">
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <ArrowLeft className="h-5 w-5 text-gray-600" />
           </button>
+          <h1 className="text-2xl font-bold text-gray-900">Add New Product</h1>
         </div>
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Product Name *</label>
-              <input
-                type="text"
-                required
-                className="input w-full"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">SKU</label>
-              <input
-                type="text"
-                className="input w-full"
-                value={formData.sku || ''}
-                onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
-              />
-            </div>
+      </div>
+      
+      <form onSubmit={e => handleSubmit(e, true)}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-1">Product Name *</label>
+            <input
+              type="text"
+              required
+              className="input w-full"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            />
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Price *</label>
-              <input
-                type="number"
-                required
-                className="input w-full"
-                value={formData.price}
-                onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Cost Price *</label>
-              <input
-                type="number"
-                required
-                className="input w-full"
-                value={formData.costPrice}
-                onChange={(e) => setFormData({ ...formData, costPrice: parseFloat(e.target.value) || 0 })}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Category *</label>
-              <select
-                required
-                className="input w-full"
-                value={formData.categoryId}
-                onChange={(e) => setFormData({ ...formData, categoryId: parseInt(e.target.value) })}
-              >
-                <option value="">Select Category</option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Weight (kg)</label>
-              <input
-                type="number"
-                step="0.01"
-                className="input w-full"
-                value={formData.weight}
-                onChange={(e) => setFormData({ ...formData, weight: parseFloat(e.target.value) || 0 })}
-              />
-            </div>
-          </div>
-
           <div>
+            <label className="block text-sm font-medium mb-1">Category *</label>
+            <select
+              required
+              className="input w-full"
+              value={formData.categoryId}
+              onChange={(e) => setFormData({ ...formData, categoryId: parseInt(e.target.value) })}
+            >
+              <option value="">Select Category</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">SKU</label>
+            <input
+              type="text"
+              className="input w-full"
+              value={formData.sku || ''}
+              onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Price (BDT) *</label>
+            <input
+              type="number"
+              required
+              className="input w-full"
+              value={formData.price}
+              onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Cost Price (BDT) *</label>
+            <input
+              type="number"
+              required
+              className="input w-full"
+              value={formData.costPrice}
+              onChange={(e) => setFormData({ ...formData, costPrice: parseFloat(e.target.value) || 0 })}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Brand</label>
+            <select className="input w-full" value={brand} onChange={e => setBrand(e.target.value)}>
+              <option value="">Select product brand</option>
+              <option value="brand1">Brand 1</option>
+              <option value="brand2">Brand 2</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Unit</label>
+            <select className="input w-full" value={unit} onChange={e => setUnit(e.target.value)}>
+              <option value="">Select unit</option>
+              <option value="piece">Piece</option>
+              <option value="kg">Kg</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Condition</label>
+            <select className="input w-full" value={condition} onChange={e => setCondition(e.target.value)}>
+              <option value="">Select condition</option>
+              <option value="export">Export Quality</option>
+              <option value="new">New</option>
+              <option value="used">Used</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Weight (kg)</label>
+            <input
+              type="number"
+              step="0.01"
+              className="input w-full"
+              value={formData.weight}
+              onChange={(e) => setFormData({ ...formData, weight: parseFloat(e.target.value) || 0 })}
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-1">Tags</label>
+            <input
+              type="text"
+              className="input w-full"
+              placeholder="Select or insert product tags and press Enter"
+              onKeyDown={handleTagInput}
+            />
+            <div className="flex flex-wrap mt-2">
+              {tags.map((tag, idx) => (
+                <span key={idx} className="bg-blue-100 text-blue-800 px-2 py-1 rounded mr-2 mb-2 text-xs flex items-center gap-1">
+                  {tag}
+                  <button type="button" onClick={() => setTags(tags.filter((_, i) => i !== idx))} className="hover:text-red-500">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
+          
+          <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-1">Short Description</label>
             <textarea
               className="input w-full"
@@ -342,54 +458,319 @@ function ProductModal({
               onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
             />
           </div>
-
-          <div>
+          
+          <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-1">Description</label>
             <textarea
               className="input w-full"
-              rows={3}
+              rows={4}
               value={formData.description || ''}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             />
           </div>
+        </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <label className="flex items-center gap-2">
+        <div className="mt-6">
+          <label className="block mb-2 font-medium">Product Type</label>
+          <div className="flex gap-6">
+            <label className="flex items-center">
               <input
-                type="checkbox"
-                checked={formData.isFeatured}
-                onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
+                type="radio"
+                name="productType"
+                value="single"
+                checked={productType === 'single'}
+                onChange={() => setProductType('single')}
+                className="mr-2"
               />
-              <span className="text-sm">Featured</span>
+              Single Product
             </label>
-            <label className="flex items-center gap-2">
+            <label className="flex items-center">
               <input
-                type="checkbox"
-                checked={formData.isBestSeller}
-                onChange={(e) => setFormData({ ...formData, isBestSeller: e.target.checked })}
+                type="radio"
+                name="productType"
+                value="variant"
+                checked={productType === 'variant'}
+                onChange={() => setProductType('variant')}
+                className="mr-2"
               />
-              <span className="text-sm">Best Seller</span>
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={formData.isNewArrival}
-                onChange={(e) => setFormData({ ...formData, isNewArrival: e.target.checked })}
-              />
-              <span className="text-sm">New Arrival</span>
+              Variant Product
             </label>
           </div>
+        </div>
 
-          <div className="flex justify-end gap-2 pt-4 border-t">
-            <button type="button" onClick={onClose} className="btn-secondary">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <div>
+            <label className="block mb-1 font-medium">Tax Profile</label>
+            <select className="input w-full" value={taxProfile} onChange={e => setTaxProfile(e.target.value)}>
+              <option value="GST">GST</option>
+              <option value="VAT">VAT</option>
+              <option value="None">None</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">You can create new tax profile or manage profiles from Tax Module</p>
+          </div>
+          
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between p-3 border rounded-lg bg-gray-50">
+              <span className="font-medium text-sm">Featured Product</span>
+              <label className="inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only" checked={formData.isFeatured} onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })} />
+                <div className={`w-11 h-6 bg-gray-200 rounded-full transition-colors ${formData.isFeatured ? 'bg-primary-600' : ''}`}>
+                  <div className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform mt-0.5 ml-0.5 ${formData.isFeatured ? 'translate-x-5' : ''}`}></div>
+                </div>
+              </label>
+            </div>
+            
+            <div className="flex items-center justify-between p-3 border rounded-lg bg-gray-50">
+              <span className="font-medium text-sm">Best Seller</span>
+              <label className="inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only" checked={formData.isBestSeller} onChange={(e) => setFormData({ ...formData, isBestSeller: e.target.checked })} />
+                <div className={`w-11 h-6 bg-gray-200 rounded-full transition-colors ${formData.isBestSeller ? 'bg-primary-600' : ''}`}>
+                  <div className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform mt-0.5 ml-0.5 ${formData.isBestSeller ? 'translate-x-5' : ''}`}></div>
+                </div>
+              </label>
+            </div>
+
+            <div className="flex items-center justify-between p-3 border rounded-lg bg-gray-50">
+              <span className="font-medium text-sm">New Arrival</span>
+              <label className="inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only" checked={formData.isNewArrival} onChange={(e) => setFormData({ ...formData, isNewArrival: e.target.checked })} />
+                <div className={`w-11 h-6 bg-gray-200 rounded-full transition-colors ${formData.isNewArrival ? 'bg-primary-600' : ''}`}>
+                  <div className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform mt-0.5 ml-0.5 ${formData.isNewArrival ? 'translate-x-5' : ''}`}></div>
+                </div>
+              </label>
+            </div>
+
+            <div className="flex items-center justify-between p-3 border rounded-lg bg-gray-50">
+              <span className="font-medium text-sm">Refundable</span>
+              <label className="inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only" checked={refundable} onChange={() => setRefundable(!refundable)} />
+                <div className={`w-11 h-6 bg-gray-200 rounded-full transition-colors ${refundable ? 'bg-primary-600' : ''}`}>
+                  <div className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform mt-0.5 ml-0.5 ${refundable ? 'translate-x-5' : ''}`}></div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-4 mt-8 pt-6 border-t">
+          <button
+            type="button"
+            className="btn-secondary px-6 py-2"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-300 font-medium transition-colors"
+            onClick={(e) => handleSubmit(e, false)}
+            disabled={isLoading}
+          >
+            Save as Draft
+          </button>
+          <button
+            type="submit"
+            className="btn-primary px-8 py-2 shadow-sm"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Saving...' : 'Save & Publish'}
+          </button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+function VariantModal({ 
+  product, 
+  onClose,
+  onCreateVariant,
+  onUpdateVariant,
+  onDeleteVariant,
+  isCreating,
+  isUpdating,
+}: { 
+  product: any
+  onClose: () => void
+  onCreateVariant: (v: CreateVariantRequest) => void
+  onUpdateVariant: (id: number, v: any) => void
+  onDeleteVariant: (id: number) => void
+  isCreating: boolean
+  isUpdating: boolean
+}) {
+  const [variantForm, setVariantForm] = useState({
+    name: '',
+    sku: '',
+    price: 0,
+    costPrice: 0,
+    stockQuantity: 0,
+    size: '',
+    color: '',
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    const attributes: any[] = []
+    if (variantForm.size) attributes.push({ attributeId: 1, value: variantForm.size })
+    if (variantForm.color) attributes.push({ attributeId: 2, value: variantForm.color })
+
+    onCreateVariant({
+      productId: product.id,
+      name: variantForm.name || `${product.name} - ${variantForm.color || ''} ${variantForm.size || ''}`.trim(),
+      sku: variantForm.sku,
+      price: variantForm.price || product.price,
+      costPrice: variantForm.costPrice || product.price * 0.6,
+      stockQuantity: variantForm.stockQuantity,
+      isActive: true,
+      attributes,
+    })
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Package className="h-6 w-6 text-primary-600" />
+            <div>
+              <h2 className="text-xl font-bold">Manage Variants</h2>
+              <p className="text-sm text-gray-500">{product.name}</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <h3 className="font-semibold text-lg">Add New Variant</h3>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Variant Name</label>
+              <input
+                type="text"
+                className="input w-full"
+                placeholder="e.g., iPhone 14 Pro 256GB"
+                value={variantForm.name}
+                onChange={(e) => setVariantForm({ ...variantForm, name: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">SKU</label>
+              <input
+                type="text"
+                className="input w-full"
+                value={variantForm.sku}
+                onChange={(e) => setVariantForm({ ...variantForm, sku: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Price (BDT)</label>
+              <input
+                type="number"
+                className="input w-full"
+                value={variantForm.price || product.price}
+                onChange={(e) => setVariantForm({ ...variantForm, price: parseFloat(e.target.value) })}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Cost Price (BDT)</label>
+              <input
+                type="number"
+                className="input w-full"
+                value={variantForm.costPrice}
+                onChange={(e) => setVariantForm({ ...variantForm, costPrice: parseFloat(e.target.value) })}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Stock Quantity</label>
+              <input
+                type="number"
+                className="input w-full"
+                value={variantForm.stockQuantity}
+                onChange={(e) => setVariantForm({ ...variantForm, stockQuantity: parseInt(e.target.value) })}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Size</label>
+              <select 
+                className="input w-full"
+                value={variantForm.size}
+                onChange={(e) => setVariantForm({ ...variantForm, size: e.target.value })}
+              >
+                <option value="">Select Size</option>
+                <option value="S">Small</option>
+                <option value="M">Medium</option>
+                <option value="L">Large</option>
+                <option value="XL">XL</option>
+                <option value="XXL">XXL</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Color</label>
+              <select 
+                className="input w-full"
+                value={variantForm.color}
+                onChange={(e) => setVariantForm({ ...variantForm, color: e.target.value })}
+              >
+                <option value="">Select Color</option>
+                <option value="Red">Red</option>
+                <option value="Blue">Blue</option>
+                <option value="Green">Green</option>
+                <option value="Black">Black</option>
+                <option value="White">White</option>
+                <option value="Gray">Gray</option>
+                <option value="Navy">Navy</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-4 pt-4">
+            <button type="button" onClick={onClose} className="btn-secondary px-6 py-2">
               Cancel
             </button>
-            <button type="submit" disabled={isLoading} className="btn-primary">
-              {isLoading ? 'Saving...' : 'Save Product'}
+            <button type="submit" className="btn-primary px-6 py-2" disabled={isCreating}>
+              {isCreating ? 'Adding...' : 'Add Variant'}
             </button>
           </div>
         </form>
+
+        {product.variants && product.variants.length > 0 && (
+          <div className="p-6 border-t">
+            <h3 className="font-semibold text-lg mb-4">Existing Variants ({product.variants.length})</h3>
+            <div className="space-y-3">
+              {product.variants.map((variant: ProductVariant) => (
+                <div key={variant.id} className="flex items-center justify-between p-3 border rounded-lg bg-gray-50">
+                  <div>
+                    <p className="font-medium">{variant.name}</p>
+                    <p className="text-sm text-gray-500">
+                      SKU: {variant.sku || 'N/A'} | Price: Tk {variant.price} | Stock: {variant.stockQuantity}
+                    </p>
+                    {variant.attributeValues.length > 0 && (
+                      <p className="text-xs text-gray-400">
+                        {variant.attributeValues.map(a => `${a.attributeName}: ${a.value}`).join(', ')}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`px-2 py-1 text-xs rounded ${variant.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      {variant.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                    <button 
+                      onClick={() => onDeleteVariant(variant.id)}
+                      className="p-1 text-red-500 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
 }
+

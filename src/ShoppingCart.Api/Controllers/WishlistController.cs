@@ -7,7 +7,7 @@ using ShoppingCart.Shared.Common;
 namespace ShoppingCart.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/wishlists")]
 [Authorize]
 public class WishlistController : ControllerBase
 {

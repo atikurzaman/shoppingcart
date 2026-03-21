@@ -21,6 +21,29 @@ export interface Product {
   viewCount: number
   images: { id: number; imageUrl: string; isMain: boolean }[]
   mainImageUrl?: string
+  variants?: ProductVariant[]
+}
+
+export interface ProductVariant {
+  id: number
+  name: string
+  sku?: string
+  price: number
+  stockQuantity: number
+  isActive: boolean
+  attributeValues: { attributeId: number; attributeName: string; value: string }[]
+}
+
+export interface CreateVariantRequest {
+  productId: number
+  name: string
+  sku?: string
+  barcode?: string
+  price: number
+  costPrice: number
+  stockQuantity: number
+  isActive: boolean
+  attributes: { attributeId: number; value: string }[]
 }
 
 export interface Category {
@@ -113,6 +136,32 @@ export const productService = {
   searchProducts: async (query: string, count = 20): Promise<Product[]> => {
     const { data } = await api.get('/products/search', { params: { query, count } })
     return data.data
+  },
+}
+
+export const variantService = {
+  getVariantsByProduct: async (productId: number): Promise<ProductVariant[]> => {
+    const { data } = await api.get(`/variants/product/${productId}`)
+    return data.data
+  },
+
+  getVariant: async (id: number): Promise<ProductVariant> => {
+    const { data } = await api.get(`/variants/${id}`)
+    return data.data
+  },
+
+  createVariant: async (variant: CreateVariantRequest): Promise<ProductVariant> => {
+    const { data } = await api.post('/variants', variant)
+    return data.data
+  },
+
+  updateVariant: async (id: number, variant: Omit<CreateVariantRequest, 'productId'>): Promise<ProductVariant> => {
+    const { data } = await api.put(`/variants/${id}`, variant)
+    return data.data
+  },
+
+  deleteVariant: async (id: number): Promise<void> => {
+    await api.delete(`/variants/${id}`)
   },
 }
 

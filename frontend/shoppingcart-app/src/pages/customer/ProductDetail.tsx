@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { productService } from '../../services/productService'
+import { wishlistService } from '../../services/wishlistService'
 import { useAppDispatch } from '../../hooks/useStore'
 import { addToCart } from '../../store/cartSlice'
+import { useAppSelector } from '../../hooks/useStore'
 import toast from 'react-hot-toast'
 import { Star, Heart, Minus, Plus, Truck, Shield, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react'
 import ProductCard from '../../components/common/ProductCard'
@@ -11,8 +13,12 @@ import ProductCard from '../../components/common/ProductCard'
 export default function ProductDetail() {
   const { slug } = useParams()
   const dispatch = useAppDispatch()
+  const queryClient = useQueryClient()
+  const { isAuthenticated } = useAppSelector((state) => state.auth)
   const [quantity, setQuantity] = useState(1)
   const [selectedImage, setSelectedImage] = useState(0)
+  const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({})
+  const [isWishlisted, setIsWishlisted] = useState(false)
 
   const { data: product, isLoading } = useQuery({
     queryKey: ['product', slug],
@@ -26,13 +32,71 @@ export default function ProductDetail() {
     enabled: !!product?.id,
   })
 
+  const { data: wishlistStatus } = useQuery({
+    queryKey: ['wishlist-check', product?.id],
+    queryFn: () => wishlistService.checkInWishlist(product!.id),
+    enabled: !!product?.id && isAuthenticated,
+  })
+
+  useEffect(() => {
+    if (wishlistStatus !== undefined) {
+      setIsWishlisted(wishlistStatus)
+    }
+  }, [wishlistStatus])
+
+  const wishlistMutation = useMutation({
+    mutationFn: (productId: number) => 
+      isWishlisted 
+        ? wishlistService.removeFromWishlist(productId).then(() => false)
+        : wishlistService.addToWishlist(productId).then(() => true),
+    onSuccess: (newStatus) => {
+      setIsWishlisted(newStatus)
+      queryClient.invalidateQueries({ queryKey: ['wishlist-check', product?.id] })
+      toast.success(newStatus ? 'Added to wishlist!' : 'Removed from wishlist')
+    },
+    onError: () => {
+      toast.error('Please login to add to wishlist')
+    },
+  })
+
+  const handleWishlistToggle = () => {
+    if (!isAuthenticated) {
+      toast.error('Please login to add to wishlist')
+      return
+    }
+    wishlistMutation.mutate(product!.id)
+  }
+
+  const selectedVariant = product?.variants?.find(v => 
+    v.attributeValues.every(av => selectedAttributes[av.attributeName] === av.value)
+  )
+
+  const selectVariantAttribute = (name: string, value: string) => {
+    setSelectedAttributes(prev => ({ ...prev, [name]: value }))
+  }
+
+  const getGroupedAttributes = (variants: any[]) => {
+    const attrs: Record<string, Set<string>> = {}
+    variants.forEach(v => {
+      v.attributeValues?.forEach((av: any) => {
+        if (!attrs[av.attributeName]) attrs[av.attributeName] = new Set()
+        attrs[av.attributeName].add(av.value)
+      })
+    })
+    return Object.entries(attrs).map(([name, values]) => ({ name, values: Array.from(values) }))
+  }
+
   const handleAddToCart = async () => {
     if (!product) return
     try {
-      await dispatch(addToCart({ productId: product.id, quantity })).unwrap()
+      const cartItem: any = { productId: product.id, quantity }
+      if (selectedVariant) {
+        cartItem.variantId = selectedVariant.id
+      }
+      await dispatch(addToCart(cartItem)).unwrap()
       toast.success('Added to cart!')
     } catch (error: any) {
-      toast.error(error || 'Failed to add to cart')
+      toast.error(error?.message || error || 'Failed to add to cart')
     }
   }
 
@@ -55,9 +119,11 @@ export default function ProductDetail() {
     )
   }
 
-  const hasDiscount = product.oldPrice && product.oldPrice > product.price
+  const displayPrice = selectedVariant?.price || product.price
+  const displayOldPrice = selectedVariant ? product.price : product.oldPrice
+  const hasDiscount = displayOldPrice && displayOldPrice > displayPrice
   const discountPercent = hasDiscount
-    ? Math.round(((product.oldPrice! - product.price) / product.oldPrice!) * 100)
+    ? Math.round(((displayOldPrice! - displayPrice) / displayOldPrice!) * 100)
     : 0
 
   return (
@@ -131,24 +197,58 @@ export default function ProductDetail() {
               </div>
               <span className="text-gray-500">({product.reviewCount} reviews)</span>
               <span className="text-gray-300">|</span>
-              <span className={`font-medium ${product.stockQuantity > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {product.stockQuantity > 0 ? 'In Stock' : 'Out of Stock'}
+              <span className={`font-medium ${(selectedVariant?.stockQuantity || product.stockQuantity) > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {(selectedVariant?.stockQuantity || product.stockQuantity) > 0 ? 'In Stock' : 'Out of Stock'}
               </span>
             </div>
 
             <div className="flex items-baseline gap-4 mb-6">
               <span className="text-4xl font-bold text-primary-600">
-                Tk {product.price.toLocaleString()}
+                Tk {displayPrice.toLocaleString()}
               </span>
               {hasDiscount && (
                 <span className="text-xl text-gray-400 line-through">
-                  Tk {product.oldPrice!.toLocaleString()}
+                  Tk {displayOldPrice!.toLocaleString()}
                 </span>
               )}
             </div>
 
             {product.shortDescription && (
               <p className="text-gray-600 mb-6">{product.shortDescription}</p>
+            )}
+
+            {/* Variant Selection */}
+            {product.variants && product.variants.length > 0 && (
+              <div className="mb-6">
+                <h3 className="font-medium text-gray-700 mb-3">Select Options</h3>
+                <div className="space-y-4">
+                  {getGroupedAttributes(product.variants).map((attr) => (
+                    <div key={attr.name}>
+                      <label className="block text-sm font-medium text-gray-600 mb-2">{attr.name}</label>
+                      <div className="flex flex-wrap gap-2">
+                        {attr.values.map((value) => (
+                          <button
+                            key={value}
+                            onClick={() => selectVariantAttribute(attr.name, value)}
+                            className={`px-4 py-2 border rounded-lg text-sm transition-colors ${
+                              selectedAttributes[attr.name] === value
+                                ? 'border-primary-600 bg-primary-50 text-primary-700'
+                                : 'border-gray-300 hover:border-gray-400'
+                            }`}
+                          >
+                            {value}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {selectedVariant && (
+                  <p className="mt-3 text-sm text-gray-600">
+                    Selected: <span className="font-medium">{selectedVariant.name}</span> - Tk {selectedVariant.price.toLocaleString()}
+                  </p>
+                )}
+              </div>
             )}
 
             {/* Quantity Selector */}
@@ -180,13 +280,20 @@ export default function ProductDetail() {
             <div className="flex gap-4 mb-8">
               <button
                 onClick={handleAddToCart}
-                disabled={product.stockQuantity === 0}
+                disabled={(selectedVariant?.stockQuantity || product.stockQuantity) === 0}
                 className="flex-1 btn-primary py-3 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Add to Cart
               </button>
-              <button className="p-3 border border-gray-300 rounded-lg hover:bg-gray-50">
-                <Heart className="h-6 w-6" />
+              <button 
+                onClick={handleWishlistToggle}
+                className={`p-3 border rounded-lg transition-colors ${
+                  isWishlisted 
+                    ? 'border-red-500 bg-red-50 text-red-500' 
+                    : 'border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                <Heart className={`h-6 w-6 ${isWishlisted ? 'fill-current' : ''}`} />
               </button>
             </div>
 

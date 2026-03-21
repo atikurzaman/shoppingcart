@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ShoppingCart.Application.DTOs.Cart;
 using ShoppingCart.Application.DTOs.Orders;
 using ShoppingCart.Application.Interfaces.Services;
@@ -11,23 +12,36 @@ namespace ShoppingCart.Application.Services;
 public class CartService : ICartService
 {
     private readonly AppDbContext _context;
+    private readonly ILogger<CartService> _logger;
 
-    public CartService(AppDbContext context)
+    public CartService(AppDbContext context, ILogger<CartService> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task<CartDto?> GetCartAsync(int? customerId = null, string? sessionId = null)
     {
+        int? userId = customerId;
+        int? actualCustomerId = null;
+        if (userId.HasValue)
+        {
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId.Value);
+            actualCustomerId = customer?.Id;
+        }
+
         var query = _context.Carts
             .Include(c => c.Items)
             .ThenInclude(ci => ci.Product)
             .ThenInclude(p => p.Images)
+            .Include(c => c.Items)
+            .ThenInclude(ci => ci.Product)
+            .ThenInclude(p => p.StockItems)
             .Include(c => c.AppliedCoupon)
             .AsQueryable();
 
-        if (customerId.HasValue)
-            query = query.Where(c => c.CustomerId == customerId);
+        if (actualCustomerId.HasValue)
+            query = query.Where(c => c.CustomerId == actualCustomerId);
         else if (!string.IsNullOrEmpty(sessionId))
             query = query.Where(c => c.SessionId == sessionId);
         else
@@ -39,9 +53,23 @@ public class CartService : ICartService
 
     public async Task<CartDto> AddToCartAsync(int? customerId, string? sessionId, AddToCartRequest request)
     {
-        var cart = await GetOrCreateCartAsync(customerId, sessionId);
-        var product = await _context.Products.FindAsync(request.ProductId)
-            ?? throw new NotFoundException("Product not found");
+        int? userId = customerId;
+        _logger.LogInformation("AddToCart called - CustomerId: {CustomerId}, ProductId: {ProductId}, Quantity: {Quantity}", customerId, request.ProductId, request.Quantity);
+        
+        var cart = await GetOrCreateCartAsync(userId, sessionId);
+        _logger.LogInformation("Cart retrieved/created - CartId: {CartId}", cart.Id);
+        
+        var product = await _context.Products
+            .IgnoreQueryFilters()
+            .FirstOrDefaultAsync(p => p.Id == request.ProductId && !p.IsDeleted && p.IsActive);
+        
+        if (product == null)
+        {
+            _logger.LogWarning("Product not found: {ProductId}", request.ProductId);
+            throw new NotFoundException("Product not found");
+        }
+        
+        _logger.LogInformation("Product found: {ProductName}, Price: {Price}", product.Name, product.Price);
 
         var existingItem = cart.Items.FirstOrDefault(ci =>
             ci.ProductId == request.ProductId && ci.VariantId == request.VariantId);
@@ -68,7 +96,9 @@ public class CartService : ICartService
         }
 
         await _context.SaveChangesAsync();
-        return (await GetCartAsync(customerId, sessionId))!;
+        var result = await GetCartAsync(customerId, sessionId);
+        _logger.LogInformation("Cart updated successfully");
+        return result!;
     }
 
     public async Task<CartDto> UpdateCartItemAsync(int? customerId, string? sessionId, UpdateCartItemRequest request)
@@ -96,7 +126,8 @@ public class CartService : ICartService
 
     public async Task<CartDto> ClearCartAsync(int? customerId, string? sessionId)
     {
-        var cart = await GetOrCreateCartAsync(customerId, sessionId);
+        int? userId = customerId;
+        var cart = await GetOrCreateCartAsync(userId, sessionId);
         _context.CartItems.RemoveRange(cart.Items);
         await _context.SaveChangesAsync();
         return (await GetCartAsync(customerId, sessionId))!;
@@ -104,7 +135,8 @@ public class CartService : ICartService
 
     public async Task<CartDto> ApplyCouponAsync(int? customerId, string? sessionId, ApplyCouponRequest request)
     {
-        var cart = await GetOrCreateCartAsync(customerId, sessionId);
+        int? userId = customerId;
+        var cart = await GetOrCreateCartAsync(userId, sessionId);
         var coupon = await _context.Coupons.FirstOrDefaultAsync(c =>
             c.Code == request.CouponCode && c.IsActive &&
             c.StartDate <= DateTime.UtcNow && c.EndDate >= DateTime.UtcNow);
@@ -131,8 +163,15 @@ public class CartService : ICartService
         return (await GetCartAsync(customerId, sessionId))!;
     }
 
-    private async Task<Cart> GetOrCreateCartAsync(int? customerId, string? sessionId)
+    private async Task<Cart> GetOrCreateCartAsync(int? userId, string? sessionId)
     {
+        int? customerId = null;
+        if (userId.HasValue)
+        {
+            var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId.Value);
+            customerId = customer?.Id;
+        }
+
         var query = _context.Carts.AsQueryable();
         if (customerId.HasValue)
             query = query.Where(c => c.CustomerId == customerId);
@@ -145,9 +184,10 @@ public class CartService : ICartService
             cart = new Cart
             {
                 CustomerId = customerId,
+                UserId = userId,
                 SessionId = sessionId,
                 CreatedAt = DateTime.UtcNow,
-                CreatedBy = customerId?.ToString() ?? "guest"
+                CreatedBy = userId?.ToString() ?? "guest"
             };
             _context.Carts.Add(cart);
             await _context.SaveChangesAsync();

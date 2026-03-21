@@ -8,7 +8,7 @@ using ShoppingCart.Shared.Common;
 namespace ShoppingCart.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/carts")]
 public class CartController : ControllerBase
 {
     private readonly ICartService _cartService;

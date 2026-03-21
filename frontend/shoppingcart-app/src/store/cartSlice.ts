@@ -67,7 +67,8 @@ export const addToCart = createAsyncThunk(
       const response = await axios.post('/api/carts/items', data, { headers: getAuthHeader() })
       return response.data.data
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to add to cart')
+      const message = error.response?.data?.message || error.response?.data || 'Failed to add to cart'
+      return rejectWithValue(typeof message === 'string' ? message : 'Failed to add to cart')
     }
   }
 )
@@ -119,6 +120,10 @@ const cartSlice = createSlice({
       })
       .addCase(addToCart.fulfilled, (state, action) => {
         state.cart = action.payload
+        state.error = null
+      })
+      .addCase(addToCart.rejected, (state, action) => {
+        state.error = action.payload as string
       })
       .addCase(updateCartItem.fulfilled, (state, action) => {
         state.cart = action.payload

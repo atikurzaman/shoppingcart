@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
@@ -17,9 +17,22 @@ const queryClient = new QueryClient({
   },
 })
 
+function ThemeInitializer() {
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme')
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark')
+    }
+  }, [])
+  return null
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
+      <ThemeInitializer />
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <App />

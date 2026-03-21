@@ -78,8 +78,24 @@ public class WishlistService : IWishlistService
 
     public async Task<WishlistItemDto> AddToWishlistAsync(int userId, int productId)
     {
-        var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId)
-            ?? throw new InvalidOperationException("Customer not found");
+        var customer = await _context.Customers.FirstOrDefaultAsync(c => c.UserId == userId);
+        
+        if (customer == null)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+                throw new InvalidOperationException("User not found");
+                
+            customer = new Customer
+            {
+                UserId = userId,
+                CompanyName = user.Email,
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = "system"
+            };
+            _context.Customers.Add(customer);
+            await _context.SaveChangesAsync();
+        }
 
         var wishlist = await _context.Wishlists
             .Include(w => w.Items)
@@ -90,10 +106,12 @@ public class WishlistService : IWishlistService
             wishlist = new Wishlist
             {
                 CustomerId = customer.Id,
+                UserId = userId,
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = userId.ToString()
             };
             _context.Wishlists.Add(wishlist);
+            await _context.SaveChangesAsync();
         }
 
         var existingItem = wishlist.Items.FirstOrDefault(i => i.ProductId == productId);

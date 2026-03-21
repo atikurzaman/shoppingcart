@@ -4,7 +4,7 @@ import { useAppSelector, useAppDispatch } from '../../hooks/useStore'
 import { fetchCart, clearCart } from '../../store/cartSlice'
 import api from '../../services/api'
 import toast from 'react-hot-toast'
-import { ArrowLeft, CreditCard, Truck, CheckCircle } from 'lucide-react'
+import { ArrowLeft, CreditCard, Truck, CheckCircle, X, Plus } from 'lucide-react'
 
 interface Address {
   id: number
@@ -14,6 +14,18 @@ interface Address {
   addressLine2?: string
   city: string
   state?: string
+  postalCode: string
+  country: string
+  isDefault: boolean
+}
+
+interface AddressFormData {
+  fullName: string
+  phoneNumber: string
+  addressLine1: string
+  addressLine2: string
+  city: string
+  state: string
   postalCode: string
   country: string
   isDefault: boolean
@@ -33,6 +45,19 @@ export default function Checkout() {
   const [orderComplete, setOrderComplete] = useState(false)
   const [orderNumber, setOrderNumber] = useState('')
   const [customerNote, setCustomerNote] = useState('')
+  const [showAddressModal, setShowAddressModal] = useState(false)
+  const [addressForm, setAddressForm] = useState<AddressFormData>({
+    fullName: '',
+    phoneNumber: '',
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    country: 'Bangladesh',
+    isDefault: false,
+  })
+  const [savingAddress, setSavingAddress] = useState(false)
 
   if (!isAuthenticated) {
     return (
@@ -60,6 +85,53 @@ export default function Checkout() {
         </div>
       </div>
     )
+  }
+
+  const handleSaveAddress = async () => {
+    if (!addressForm.fullName || !addressForm.phoneNumber || !addressForm.addressLine1 || !addressForm.city || !addressForm.postalCode) {
+      toast.error('Please fill in all required fields')
+      return
+    }
+
+    setSavingAddress(true)
+    try {
+      const response = await api.post('/addresses', {
+        fullName: addressForm.fullName,
+        phoneNumber: addressForm.phoneNumber,
+        addressLine1: addressForm.addressLine1,
+        addressLine2: addressForm.addressLine2,
+        city: addressForm.city,
+        state: addressForm.state,
+        postalCode: addressForm.postalCode,
+        country: addressForm.country,
+        addressType: 'Both',
+        isDefault: addressForm.isDefault,
+      })
+      
+      const newAddress = {
+        id: response.data.data.id,
+        ...addressForm,
+      }
+      setAddresses([...addresses, newAddress])
+      setSelectedAddress(newAddress.id)
+      setShowAddressModal(false)
+      setAddressForm({
+        fullName: '',
+        phoneNumber: '',
+        addressLine1: '',
+        addressLine2: '',
+        city: '',
+        state: '',
+        postalCode: '',
+        country: 'Bangladesh',
+        isDefault: false,
+      })
+      toast.success('Address added successfully')
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to save address')
+    } finally {
+      setSavingAddress(false)
+    }
   }
 
   const handlePlaceOrder = async () => {
@@ -170,8 +242,12 @@ export default function Checkout() {
                     </label>
                   ))
                 )}
-                <button className="text-primary-600 hover:underline text-sm">
-                  + Add New Address
+                <button 
+                  onClick={() => setShowAddressModal(true)}
+                  className="flex items-center gap-2 text-primary-600 hover:text-primary-700 text-sm font-medium"
+                >
+                  <Plus className="h-4 w-4" />
+                  Add New Address
                 </button>
               </div>
             </div>
@@ -306,6 +382,143 @@ export default function Checkout() {
           </div>
         </div>
       </div>
+
+      {showAddressModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b flex items-center justify-between">
+              <h2 className="text-xl font-bold">Add New Address</h2>
+              <button 
+                onClick={() => setShowAddressModal(false)}
+                className="p-2 hover:bg-gray-100 rounded-full"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Full Name *</label>
+                <input
+                  type="text"
+                  value={addressForm.fullName}
+                  onChange={(e) => setAddressForm({ ...addressForm, fullName: e.target.value })}
+                  className="input w-full"
+                  placeholder="Enter your full name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Phone Number *</label>
+                <input
+                  type="tel"
+                  value={addressForm.phoneNumber}
+                  onChange={(e) => setAddressForm({ ...addressForm, phoneNumber: e.target.value })}
+                  className="input w-full"
+                  placeholder="+880 1XXXXXXXXX"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Address Line 1 *</label>
+                <input
+                  type="text"
+                  value={addressForm.addressLine1}
+                  onChange={(e) => setAddressForm({ ...addressForm, addressLine1: e.target.value })}
+                  className="input w-full"
+                  placeholder="House/Flat, Road, Area"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Address Line 2</label>
+                <input
+                  type="text"
+                  value={addressForm.addressLine2}
+                  onChange={(e) => setAddressForm({ ...addressForm, addressLine2: e.target.value })}
+                  className="input w-full"
+                  placeholder="Additional address info"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">City *</label>
+                  <input
+                    type="text"
+                    value={addressForm.city}
+                    onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })}
+                    className="input w-full"
+                    placeholder="Dhaka"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">State</label>
+                  <input
+                    type="text"
+                    value={addressForm.state}
+                    onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })}
+                    className="input w-full"
+                    placeholder="Dhaka"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Postal Code *</label>
+                  <input
+                    type="text"
+                    value={addressForm.postalCode}
+                    onChange={(e) => setAddressForm({ ...addressForm, postalCode: e.target.value })}
+                    className="input w-full"
+                    placeholder="1200"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-1">Country</label>
+                  <input
+                    type="text"
+                    value={addressForm.country}
+                    onChange={(e) => setAddressForm({ ...addressForm, country: e.target.value })}
+                    className="input w-full"
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="isDefault"
+                  checked={addressForm.isDefault}
+                  onChange={(e) => setAddressForm({ ...addressForm, isDefault: e.target.checked })}
+                  className="mr-2"
+                />
+                <label htmlFor="isDefault" className="text-sm">Set as default address</label>
+              </div>
+            </div>
+
+            <div className="p-6 border-t flex justify-end gap-4">
+              <button
+                onClick={() => setShowAddressModal(false)}
+                className="btn-secondary px-6 py-2"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveAddress}
+                disabled={savingAddress}
+                className="btn-primary px-6 py-2"
+              >
+                {savingAddress ? 'Saving...' : 'Save Address'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
