@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAppSelector } from '../../hooks/useStore'
-import { api } from '../../services/api'
+import api from '../../services/api'
 import { Heart, Trash2, ShoppingCart } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -22,7 +22,7 @@ export default function Wishlist() {
   useEffect(() => {
     if (user) {
       api.get('/wishlist')
-        .then(res => setItems(res.data))
+        .then(res => setItems(res.data.data || []))
         .catch(() => {})
         .finally(() => setLoading(false))
     } else {
