@@ -17,6 +17,7 @@ export default function ProductDetail() {
   const { isAuthenticated } = useAppSelector((state) => state.auth)
   const [quantity, setQuantity] = useState(1)
   const [selectedImage, setSelectedImage] = useState(0)
+  const [displayImage, setDisplayImage] = useState<string | null>(null)
   const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({})
   const [isWishlisted, setIsWishlisted] = useState(false)
 
@@ -70,6 +71,18 @@ export default function ProductDetail() {
   const selectedVariant = product?.variants?.find(v => 
     v.attributeValues.every(av => selectedAttributes[av.attributeName] === av.value)
   )
+
+  useEffect(() => {
+    if (selectedVariant?.imageUrl) {
+      setDisplayImage(selectedVariant.imageUrl)
+    } else if (product?.images && product.images.length > 0) {
+      if (selectedImage < product.images.length) {
+         setDisplayImage(product.images[selectedImage].imageUrl)
+      } else {
+         setDisplayImage(product.images[0].imageUrl)
+      }
+    }
+  }, [selectedVariant, product?.images, selectedImage])
 
   const selectVariantAttribute = (name: string, value: string) => {
     setSelectedAttributes(prev => ({ ...prev, [name]: value }))
@@ -143,15 +156,15 @@ export default function ProductDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Image Gallery */}
           <div>
-            <div className="relative aspect-square bg-white rounded-xl overflow-hidden mb-4">
-              {product.images?.[selectedImage]?.imageUrl ? (
+            <div className="relative aspect-square bg-white dark:bg-dark-200 rounded-xl overflow-hidden mb-4 border dark:border-gray-700">
+              {displayImage ? (
                 <img
-                  src={product.images[selectedImage].imageUrl}
+                  src={displayImage}
                   alt={product.name}
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
+                <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">No Image</div>
               )}
 
               {hasDiscount && (
@@ -161,21 +174,29 @@ export default function ProductDetail() {
               )}
             </div>
 
-            {product.images && product.images.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-2">
-                {product.images.map((img, i) => (
-                  <button
-                    key={img.id}
-                    onClick={() => setSelectedImage(i)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 ${
-                      i === selectedImage ? 'border-primary-600' : 'border-gray-200'
-                    }`}
-                  >
-                    <img src={img.imageUrl} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            )}
+            <div className="flex gap-3 overflow-x-auto pb-2">
+              {product.images?.map((img) => (
+                <button
+                  key={img.id}
+                  onClick={() => setDisplayImage(img.imageUrl)}
+                  className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
+                    displayImage === img.imageUrl ? 'border-primary-600' : 'border-gray-200 dark:border-gray-700'
+                  }`}
+                >
+                  <img src={img.imageUrl} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+              {selectedVariant?.imageUrl && !product.images?.some(i => i.imageUrl === selectedVariant.imageUrl) && (
+                <button
+                  onClick={() => setDisplayImage(selectedVariant.imageUrl!)}
+                  className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
+                    displayImage === selectedVariant.imageUrl ? 'border-primary-600' : 'border-gray-200 dark:border-gray-700'
+                  }`}
+                >
+                  <img src={selectedVariant.imageUrl} alt="Variant" className="w-full h-full object-cover" />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Product Info */}

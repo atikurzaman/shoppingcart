@@ -61,7 +61,7 @@ describe('Product Service', () => {
       }
       vi.mocked(api.post).mockResolvedValue(mockResponse)
 
-      const result = await productService.createProduct(newProduct)
+      const result = await productService.createProduct(newProduct as any)
 
       expect(api.post).toHaveBeenCalledWith('/products', newProduct)
       expect(result.id).toBe(1)

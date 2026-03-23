@@ -20,6 +20,13 @@ export default {
           800: '#1e40af',
           900: '#1e3a8a',
         },
+        dark: {
+          100: '#1f2937',
+          200: '#1a1f2e',
+          300: '#111827',
+          400: '#0f172a',
+          500: '#0d1117',
+        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

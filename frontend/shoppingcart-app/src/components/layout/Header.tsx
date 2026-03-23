@@ -27,7 +27,7 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 sticky top-0 z-50 shadow-lg">
+    <header className="bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 dark:from-dark-300 dark:via-dark-200 dark:to-dark-100 sticky top-0 z-50 shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center">
@@ -49,9 +49,9 @@ export default function Header() {
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 pl-10 rounded-full bg-white/90 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-300"
+                className="w-full px-4 py-2 pl-10 rounded-full bg-white/90 text-gray-800 dark:bg-dark-200 dark:text-white dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-300"
               />
-              <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400 dark:text-gray-300" />
             </div>
           </form>
 
@@ -91,18 +91,18 @@ export default function Header() {
                   <User className="h-5 w-5" />
                   <span className="hidden sm:block">{user?.firstName}</span>
                 </button>
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                  <Link to="/account" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Account</Link>
-                  <Link to="/orders" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">My Orders</Link>
-                  <Link to="/wishlist" className="block px-4 py-2 text-gray-700 hover:bg-gray-100">Wishlist</Link>
-                  <hr className="my-2" />
-                  <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">Logout</button>
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-100 rounded-lg shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  <Link to="/account" className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-200">My Account</Link>
+                  <Link to="/orders" className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-200">My Orders</Link>
+                  <Link to="/wishlist" className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-200">Wishlist</Link>
+                  <hr className="my-2 dark:border-gray-700" />
+                  <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-dark-200">Logout</button>
                 </div>
               </div>
             ) : (
               <Link
                 to="/login"
-                className="px-4 py-2 text-white border border-white rounded-full hover:bg-white hover:text-primary-600 transition-colors"
+                className="px-4 py-2 text-white border border-white rounded-full hover:bg-white hover:text-primary-600 dark:hover:bg-white dark:hover:text-dark-300 transition-colors"
               >
                 Sign In
               </Link>
@@ -119,14 +119,14 @@ export default function Header() {
         </div>
 
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-white/20">
+          <div className="md:hidden py-4 border-t border-white/20 dark:border-gray-700">
             <form onSubmit={handleSearch} className="mb-4">
               <input
                 type="text"
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 rounded-lg bg-white/90 text-gray-800 placeholder-gray-500"
+                className="w-full px-4 py-2 rounded-lg bg-white/90 text-gray-800 dark:bg-dark-200 dark:text-white dark:placeholder-gray-400"
               />
             </form>
             <nav className="space-y-2">

@@ -1,0 +1,23 @@
+﻿  Determining projects to restore...
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.AspNetCore.SignalR will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary. [C:\AI\shoppingcart\tests\ShoppingCart.Tests\ShoppingCart.Tests.csproj]
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.Extensions.Configuration.Abstractions will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary. [C:\AI\shoppingcart\tests\ShoppingCart.Tests\ShoppingCart.Tests.csproj]
+  All projects are up-to-date for restore.
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.AspNetCore.SignalR will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.Extensions.Configuration.Abstractions will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.
+  ShoppingCart.Domain -> C:\AI\shoppingcart\src\ShoppingCart.Domain\bin\Debug\net10.0\ShoppingCart.Domain.dll
+  ShoppingCart.Shared -> C:\AI\shoppingcart\src\ShoppingCart.Shared\bin\Debug\net10.0\ShoppingCart.Shared.dll
+  ShoppingCart.Persistence -> C:\AI\shoppingcart\src\ShoppingCart.Persistence\bin\Debug\net10.0\ShoppingCart.Persistence.dll
+  ShoppingCart.Application -> C:\AI\shoppingcart\src\ShoppingCart.Application\bin\Debug\net10.0\ShoppingCart.Application.dll
+  ShoppingCart.Infrastructure -> C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\bin\Debug\net10.0\ShoppingCart.Infrastructure.dll
+  ShoppingCart.Tests -> C:\AI\shoppingcart\tests\ShoppingCart.Tests\bin\Debug\net10.0\ShoppingCart.Tests.dll
+
+Build succeeded.
+
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.AspNetCore.SignalR will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary. [C:\AI\shoppingcart\tests\ShoppingCart.Tests\ShoppingCart.Tests.csproj]
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.Extensions.Configuration.Abstractions will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary. [C:\AI\shoppingcart\tests\ShoppingCart.Tests\ShoppingCart.Tests.csproj]
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.AspNetCore.SignalR will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.Extensions.Configuration.Abstractions will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.
+    4 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.68

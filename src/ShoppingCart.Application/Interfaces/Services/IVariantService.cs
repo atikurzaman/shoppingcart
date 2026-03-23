@@ -20,6 +20,7 @@ public class CreateVariantRequest
     public decimal Price { get; set; }
     public decimal CostPrice { get; set; }
     public int StockQuantity { get; set; }
+    public string? ImageUrl { get; set; }
     public bool IsActive { get; set; } = true;
     public List<CreateVariantAttributeRequest> Attributes { get; set; } = new();
 }
@@ -32,6 +33,7 @@ public class UpdateVariantRequest
     public decimal Price { get; set; }
     public decimal CostPrice { get; set; }
     public int StockQuantity { get; set; }
+    public string? ImageUrl { get; set; }
     public bool IsActive { get; set; } = true;
     public List<CreateVariantAttributeRequest> Attributes { get; set; } = new();
 }

@@ -30,6 +30,7 @@ export interface ProductVariant {
   sku?: string
   price: number
   stockQuantity: number
+  imageUrl?: string
   isActive: boolean
   attributeValues: { attributeId: number; attributeName: string; value: string }[]
 }
@@ -42,6 +43,7 @@ export interface CreateVariantRequest {
   price: number
   costPrice: number
   stockQuantity: number
+  imageUrl?: string
   isActive: boolean
   attributes: { attributeId: number; value: string }[]
 }

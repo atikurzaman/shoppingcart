@@ -55,6 +55,7 @@ public class VariantService : IVariantService
             Price = request.Price,
             CostPrice = request.CostPrice,
             StockQuantity = request.StockQuantity,
+            ImageUrl = request.ImageUrl,
             IsActive = request.IsActive,
             CreatedAt = DateTime.UtcNow,
             CreatedBy = "system"
@@ -120,6 +121,7 @@ public class VariantService : IVariantService
         variant.Price = request.Price;
         variant.CostPrice = request.CostPrice;
         variant.StockQuantity = request.StockQuantity;
+        variant.ImageUrl = request.ImageUrl;
         variant.IsActive = request.IsActive;
         variant.UpdatedAt = DateTime.UtcNow;
         variant.UpdatedBy = "system";

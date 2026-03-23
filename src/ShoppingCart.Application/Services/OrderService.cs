@@ -119,6 +119,7 @@ public class OrderService : IOrderService
             order.Items.Add(new Domain.Entities.OrderItem
             {
                 ProductId = item.ProductId,
+                VariantId = item.VariantId,
                 ProductName = item.ProductName,
                 SKU = (await _context.Products.FindAsync(item.ProductId))?.SKU,
                 Quantity = item.Quantity,

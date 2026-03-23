@@ -1,0 +1,75 @@
+﻿  Determining projects to restore...
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.AspNetCore.SignalR will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary. [C:\AI\shoppingcart\tests\ShoppingCart.Tests\ShoppingCart.Tests.csproj]
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.Extensions.Configuration.Abstractions will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary. [C:\AI\shoppingcart\tests\ShoppingCart.Tests\ShoppingCart.Tests.csproj]
+  All projects are up-to-date for restore.
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.AspNetCore.SignalR will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.Extensions.Configuration.Abstractions will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.
+  ShoppingCart.Domain -> C:\AI\shoppingcart\src\ShoppingCart.Domain\bin\Debug\net10.0\ShoppingCart.Domain.dll
+  ShoppingCart.Shared -> C:\AI\shoppingcart\src\ShoppingCart.Shared\bin\Debug\net10.0\ShoppingCart.Shared.dll
+  ShoppingCart.Persistence -> C:\AI\shoppingcart\src\ShoppingCart.Persistence\bin\Debug\net10.0\ShoppingCart.Persistence.dll
+  ShoppingCart.Application -> C:\AI\shoppingcart\src\ShoppingCart.Application\bin\Debug\net10.0\ShoppingCart.Application.dll
+  ShoppingCart.Infrastructure -> C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\bin\Debug\net10.0\ShoppingCart.Infrastructure.dll
+  ShoppingCart.Tests -> C:\AI\shoppingcart\tests\ShoppingCart.Tests\bin\Debug\net10.0\ShoppingCart.Tests.dll
+Test run for C:\AI\shoppingcart\tests\ShoppingCart.Tests\bin\Debug\net10.0\ShoppingCart.Tests.dll (.NETCoreApp,Version=v10.0)
+VSTest version 18.0.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+  Failed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithInvalidPhoneNumber_ShouldFail(phone: "+1 234 567 8901") [103 ms]
+  Error Message:
+   Expected result.IsValid to be false, but found True.
+  Stack Trace:
+     at FluentAssertions.Execution.XUnit2TestFramework.Throw(String message)
+   at FluentAssertions.Execution.TestFrameworkProvider.Throw(String message)
+   at FluentAssertions.Execution.DefaultAssertionStrategy.HandleFailure(String message)
+   at FluentAssertions.Execution.AssertionScope.FailWith(Func`1 failReasonFunc)
+   at FluentAssertions.Execution.AssertionScope.FailWith(Func`1 failReasonFunc)
+   at FluentAssertions.Execution.AssertionScope.FailWith(String message, Object[] args)
+   at FluentAssertions.Primitives.BooleanAssertions`1.BeFalse(String because, Object[] becauseArgs)
+   at ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithInvalidPhoneNumber_ShouldFail(String phone) in C:\AI\shoppingcart\tests\ShoppingCart.Tests\Validators\AuthValidatorTests.cs:line 250
+   at InvokeStub_AuthValidatorTests.RegisterValidator_WithInvalidPhoneNumber_ShouldFail(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed ShoppingCart.Tests.Validators.AuthValidatorTests.LoginValidator_WithInvalidEmailFormat_ShouldFail(email: "spaces in@email.com") [2 ms]
+  Error Message:
+   Expected result.IsValid to be false, but found True.
+  Stack Trace:
+     at FluentAssertions.Execution.XUnit2TestFramework.Throw(String message)
+   at FluentAssertions.Execution.TestFrameworkProvider.Throw(String message)
+   at FluentAssertions.Execution.DefaultAssertionStrategy.HandleFailure(String message)
+   at FluentAssertions.Execution.AssertionScope.FailWith(Func`1 failReasonFunc)
+   at FluentAssertions.Execution.AssertionScope.FailWith(Func`1 failReasonFunc)
+   at FluentAssertions.Execution.AssertionScope.FailWith(String message, Object[] args)
+   at FluentAssertions.Primitives.BooleanAssertions`1.BeFalse(String because, Object[] becauseArgs)
+   at ShoppingCart.Tests.Validators.AuthValidatorTests.LoginValidator_WithInvalidEmailFormat_ShouldFail(String email) in C:\AI\shoppingcart\tests\ShoppingCart.Tests\Validators\AuthValidatorTests.cs:line 55
+   at InvokeStub_AuthValidatorTests.LoginValidator_WithInvalidEmailFormat_ShouldFail(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed ShoppingCart.Tests.Validators.AuthValidatorTests.LoginValidator_WithInvalidEmailFormat_ShouldFail(email: "no@domain") [3 ms]
+  Error Message:
+   Expected result.IsValid to be false, but found True.
+  Stack Trace:
+     at FluentAssertions.Execution.XUnit2TestFramework.Throw(String message)
+   at FluentAssertions.Execution.TestFrameworkProvider.Throw(String message)
+   at FluentAssertions.Execution.DefaultAssertionStrategy.HandleFailure(String message)
+   at FluentAssertions.Execution.AssertionScope.FailWith(Func`1 failReasonFunc)
+   at FluentAssertions.Execution.AssertionScope.FailWith(Func`1 failReasonFunc)
+   at FluentAssertions.Execution.AssertionScope.FailWith(String message, Object[] args)
+   at FluentAssertions.Primitives.BooleanAssertions`1.BeFalse(String because, Object[] becauseArgs)
+   at ShoppingCart.Tests.Validators.AuthValidatorTests.LoginValidator_WithInvalidEmailFormat_ShouldFail(String email) in C:\AI\shoppingcart\tests\ShoppingCart.Tests\Validators\AuthValidatorTests.cs:line 55
+   at InvokeStub_AuthValidatorTests.LoginValidator_WithInvalidEmailFormat_ShouldFail(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Failed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithWeakPassword_ShouldFail(password: "NoUppercase123") [1 ms]
+  Error Message:
+   Expected result.IsValid to be false, but found True.
+  Stack Trace:
+     at FluentAssertions.Execution.XUnit2TestFramework.Throw(String message)
+   at FluentAssertions.Execution.TestFrameworkProvider.Throw(String message)
+   at FluentAssertions.Execution.DefaultAssertionStrategy.HandleFailure(String message)
+   at FluentAssertions.Execution.AssertionScope.FailWith(Func`1 failReasonFunc)
+   at FluentAssertions.Execution.AssertionScope.FailWith(Func`1 failReasonFunc)
+   at FluentAssertions.Execution.AssertionScope.FailWith(String message, Object[] args)
+   at FluentAssertions.Primitives.BooleanAssertions`1.BeFalse(String because, Object[] becauseArgs)
+   at ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithWeakPassword_ShouldFail(String password) in C:\AI\shoppingcart\tests\ShoppingCart.Tests\Validators\AuthValidatorTests.cs:line 141
+   at InvokeStub_AuthValidatorTests.RegisterValidator_WithWeakPassword_ShouldFail(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+
+Failed!  - Failed:     4, Passed:   102, Skipped:     0, Total:   106, Duration: 2 s - ShoppingCart.Tests.dll (net10.0)

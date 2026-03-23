@@ -25,10 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\ShoppingCart.Application\ShoppingCart.Application.csproj" />
-    <ProjectReference Include="..\src\ShoppingCart.Domain\ShoppingCart.Domain.csproj" />
-    <ProjectReference Include="..\src\ShoppingCart.Persistence\ShoppingCart.Persistence.csproj" />
-    <ProjectReference Include="..\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\ShoppingCart.Application\ShoppingCart.Application.csproj" />
+    <ProjectReference Include="..\..\src\ShoppingCart.Domain\ShoppingCart.Domain.csproj" />
+    <ProjectReference Include="..\..\src\ShoppingCart.Persistence\ShoppingCart.Persistence.csproj" />
+    <ProjectReference Include="..\..\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

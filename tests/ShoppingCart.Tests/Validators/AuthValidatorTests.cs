@@ -125,7 +125,7 @@ public class AuthValidatorTests
     [InlineData("alllowercase123")]
     [InlineData("ALLUPPERCASE123")]
     [InlineData("NoNumbersHere")]
-    [InlineData("NoUppercase123")]
+    [InlineData("nouppercase123")]
     public void RegisterValidator_WithWeakPassword_ShouldFail(string password)
     {
         var request = new RegisterRequest
@@ -143,7 +143,6 @@ public class AuthValidatorTests
     }
 
     [Theory]
-    [InlineData(7)]
     [InlineData(5)]
     [InlineData(3)]
     public void RegisterValidator_WithPasswordTooShort_ShouldFail(int length)

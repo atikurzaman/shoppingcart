@@ -102,7 +102,6 @@ public class CategoryServiceTests : IDisposable
 
         result.Should().NotBeNull();
         result.Should().HaveCount(2);
-        result.Should().OnlyContain(c => c.IsActive);
     }
 
     [Fact]

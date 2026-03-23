@@ -1,0 +1,158 @@
+﻿  Determining projects to restore...
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.AspNetCore.SignalR will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary. [C:\AI\shoppingcart\tests\ShoppingCart.Tests\ShoppingCart.Tests.csproj]
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.Extensions.Configuration.Abstractions will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary. [C:\AI\shoppingcart\tests\ShoppingCart.Tests\ShoppingCart.Tests.csproj]
+  All projects are up-to-date for restore.
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.AspNetCore.SignalR will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.
+C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.Extensions.Configuration.Abstractions will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.
+  ShoppingCart.Domain -> C:\AI\shoppingcart\src\ShoppingCart.Domain\bin\Debug\net10.0\ShoppingCart.Domain.dll
+  ShoppingCart.Shared -> C:\AI\shoppingcart\src\ShoppingCart.Shared\bin\Debug\net10.0\ShoppingCart.Shared.dll
+  ShoppingCart.Persistence -> C:\AI\shoppingcart\src\ShoppingCart.Persistence\bin\Debug\net10.0\ShoppingCart.Persistence.dll
+  ShoppingCart.Application -> C:\AI\shoppingcart\src\ShoppingCart.Application\bin\Debug\net10.0\ShoppingCart.Application.dll
+  ShoppingCart.Infrastructure -> C:\AI\shoppingcart\src\ShoppingCart.Infrastructure\bin\Debug\net10.0\ShoppingCart.Infrastructure.dll
+  ShoppingCart.Tests -> C:\AI\shoppingcart\tests\ShoppingCart.Tests\bin\Debug\net10.0\ShoppingCart.Tests.dll
+Test run for C:\AI\shoppingcart\tests\ShoppingCart.Tests\bin\Debug\net10.0\ShoppingCart.Tests.dll (.NETCoreApp,Version=v10.0)
+VSTest version 18.0.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 10.0.3)
+[xUnit.net 00:00:00.11]   Discovering: ShoppingCart.Tests
+[xUnit.net 00:00:00.20]   Discovered:  ShoppingCart.Tests
+[xUnit.net 00:00:00.20]   Starting:    ShoppingCart.Tests
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.LoginValidator_WithShortPassword_ShouldFail(password: "12345") [67 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithInvalidSkuFormat_ShouldFail(sku: "INVALID SKU WITH SPACES") [66 ms]
+  Passed ShoppingCart.Tests.Validators.CategoryValidatorTests.CreateValidator_WithNegativeDisplayOrder_ShouldFail(displayOrder: -10) [68 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithInvalidSkuFormat_ShouldFail(sku: "INVALID#SKU") [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CategoryValidatorTests.CreateValidator_WithNegativeDisplayOrder_ShouldFail(displayOrder: -1) [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.LoginValidator_WithShortPassword_ShouldFail(password: "abc") [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithInvalidSkuFormat_ShouldFail(sku: "INVALID@SKU") [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CategoryValidatorTests.CreateValidator_WithNameExceeding100Characters_ShouldFail [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithInvalidPrice_ShouldFail(price: -1) [2 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithInvalidPhoneNumber_ShouldFail(phone: "abc-def") [3 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithInvalidPrice_ShouldFail(price: -100) [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithInvalidPrice_ShouldFail(price: 0) [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithInvalidPhoneNumber_ShouldFail(phone: "(123) 456-7890") [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithInvalidPhoneNumber_ShouldFail(phone: "+1 234 567 8901") [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CategoryValidatorTests.CreateValidator_WithInvalidParentCategoryId_ShouldFail(parentCategoryId: 0) [4 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithNegativeMinimumStockLevel_ShouldFail(stockLevel: -10) [1 ms]
+  Passed ShoppingCart.Tests.Validators.CategoryValidatorTests.CreateValidator_WithInvalidParentCategoryId_ShouldFail(parentCategoryId: -1) [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithNegativeMinimumStockLevel_ShouldFail(stockLevel: -1) [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CategoryValidatorTests.CreateValidator_WithValidRequest_ShouldPass [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithZeroCategoryId_ShouldFail [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithNegativeWeight_ShouldFail(weight: -10) [1 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithNegativeWeight_ShouldFail(weight: -1) [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithNegativeCostPrice_ShouldFail(costPrice: -1) [1 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithNegativeCostPrice_ShouldFail(costPrice: -50) [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithValidSku_ShouldPass(sku: "VALID_SKU_456") [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CategoryValidatorTests.UpdateValidator_WithValidRequest_ShouldPass [4 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithValidSku_ShouldPass(sku: "SKU123") [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithValidSku_ShouldPass(sku: "VALID-SKU-123") [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CategoryValidatorTests.CreateValidator_WithEmptyName_ShouldFail [1 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithNegativeReorderLevel_ShouldFail(reorderLevel: -5) [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CategoryValidatorTests.UpdateValidator_WithNegativeId_ShouldFail [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithNegativeReorderLevel_ShouldFail(reorderLevel: -1) [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithNameExceeding200Characters_ShouldFail [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithEmptyName_ShouldFail [1 ms]
+[xUnit.net 00:00:00.45]       Expected result.IsValid to be false, but found True.
+[xUnit.net 00:00:00.45]       Stack Trace:
+[xUnit.net 00:00:00.45]            at FluentAssertions.Execution.XUnit2TestFramework.Throw(String message)
+[xUnit.net 00:00:00.45]            at FluentAssertions.Execution.TestFrameworkProvider.Throw(String message)
+[xUnit.net 00:00:00.45]            at FluentAssertions.Execution.DefaultAssertionStrategy.HandleFailure(String message)
+[xUnit.net 00:00:00.45]            at FluentAssertions.Execution.AssertionScope.FailWith(Func`1 failReasonFunc)
+[xUnit.net 00:00:00.45]            at FluentAssertions.Execution.AssertionScope.FailWith(Func`1 failReasonFunc)
+[xUnit.net 00:00:00.45]            at FluentAssertions.Execution.AssertionScope.FailWith(String message, Object[] args)
+[xUnit.net 00:00:00.45]            at FluentAssertions.Primitives.BooleanAssertions`1.BeFalse(String because, Object[] becauseArgs)
+[xUnit.net 00:00:00.45]         C:\AI\shoppingcart\tests\ShoppingCart.Tests\Validators\AuthValidatorTests.cs(250,0): at ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithInvalidPhoneNumber_ShouldFail(String phone)
+[xUnit.net 00:00:00.45]            at InvokeStub_AuthValidatorTests.RegisterValidator_WithInvalidPhoneNumber_ShouldFail(Object, Span`1)
+[xUnit.net 00:00:00.45]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Passed ShoppingCart.Tests.Validators.CreateProductRequestValidatorTests.Validate_WithValidRequest_ShouldPass [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.CategoryValidatorTests.CreateValidator_WithDescriptionExceeding500Characters_ShouldFail [9 ms]
+  Passed ShoppingCart.Tests.Validators.CategoryValidatorTests.UpdateValidator_WithInvalidId_ShouldFail [< 1 ms]
+  Failed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithInvalidPhoneNumber_ShouldFail(phone: "12345") [108 ms]
+  Error Message:
+   Expected result.IsValid to be false, but found True.
+  Stack Trace:
+     at FluentAssertions.Execution.XUnit2TestFramework.Throw(String message)
+   at FluentAssertions.Execution.TestFrameworkProvider.Throw(String message)
+   at FluentAssertions.Execution.DefaultAssertionStrategy.HandleFailure(String message)
+   at FluentAssertions.Execution.AssertionScope.FailWith(Func`1 failReasonFunc)
+   at FluentAssertions.Execution.AssertionScope.FailWith(Func`1 failReasonFunc)
+   at FluentAssertions.Execution.AssertionScope.FailWith(String message, Object[] args)
+   at FluentAssertions.Primitives.BooleanAssertions`1.BeFalse(String because, Object[] becauseArgs)
+   at ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithInvalidPhoneNumber_ShouldFail(String phone) in C:\AI\shoppingcart\tests\ShoppingCart.Tests\Validators\AuthValidatorTests.cs:line 250
+   at InvokeStub_AuthValidatorTests.RegisterValidator_WithInvalidPhoneNumber_ShouldFail(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.LoginValidator_WithInvalidEmailFormat_ShouldFail(email: "@nodomain.com") [1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.LoginValidator_WithInvalidEmailFormat_ShouldFail(email: "invalid-email") [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.LoginValidator_WithInvalidEmailFormat_ShouldFail(email: "spaces in@email.com") [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.LoginValidator_WithInvalidEmailFormat_ShouldFail(email: "no@domain") [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.ChangePasswordValidator_WithEmptyCurrentPassword_ShouldFail [2 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithWeakPassword_ShouldFail(password: "ALLUPPERCASE123") [1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithWeakPassword_ShouldFail(password: "nouppercase123") [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithWeakPassword_ShouldFail(password: "NoNumbersHere") [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithWeakPassword_ShouldFail(password: "alllowercase123") [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithWeakPassword_ShouldFail(password: "password") [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithMismatchedPasswords_ShouldFail [1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.ChangePasswordValidator_WithValidRequest_ShouldPass [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.ChangePasswordValidator_WithSamePassword_ShouldFail [1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithFirstNameExceeding50Characters_ShouldFail [1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithPasswordTooShort_ShouldFail(length: 5) [1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithPasswordTooShort_ShouldFail(length: 3) [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithEmptyFirstName_ShouldFail [1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithValidRequest_ShouldPass [< 1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.LoginValidator_WithEmptyPassword_ShouldFail [1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithEmptyEmail_ShouldFail [1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.RegisterValidator_WithEmptyLastName_ShouldFail [1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.LoginValidator_WithEmptyEmail_ShouldFail [1 ms]
+  Passed ShoppingCart.Tests.Validators.AuthValidatorTests.LoginValidator_WithValidRequest_ShouldPass [< 1 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.DeleteCategoryAsync_WithInvalidId_ShouldReturnFalse [1 s]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.SearchProductsAsync_WithQuery_ShouldReturnMatchingProducts [1 s]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.ToggleFeaturedAsync_WithValidId_ShouldToggleFeaturedStatus [147 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.IncrementViewCountAsync_ShouldIncrementCount [8 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.GetCategoryByIdAsync_WithInvalidId_ShouldReturnNull [1 ms]
+  Passed ShoppingCart.Tests.Services.CartServiceTests.AddToCartAsync_WithNewProduct_ShouldAddItemToCart [1 s]
+  Passed ShoppingCart.Tests.Services.CartServiceTests.CartTotalCalculation_ShouldIncludeTax [3 ms]
+  Passed ShoppingCart.Tests.Services.CartServiceTests.GetCartAsync_WithSessionId_ShouldReturnCart [5 ms]
+  Passed ShoppingCart.Tests.Services.CartServiceTests.AddToCartAsync_WithExistingProduct_ShouldIncrementQuantity [4 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.GetCategoriesAsync_WithNoFilters_ShouldReturnActiveCategories [52 ms]
+  Passed ShoppingCart.Tests.Services.CartServiceTests.RemoveCartItemAsync_WithValidItem_ShouldRemoveItem [17 ms]
+  Passed ShoppingCart.Tests.Services.CartServiceTests.GetCartAsync_WithNoSessionOrCustomer_ShouldReturnNull [1 ms]
+  Passed ShoppingCart.Tests.Services.CartServiceTests.ClearCartAsync_ShouldRemoveAllItems [4 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.GetProductBySlugAsync_WithInvalidSlug_ShouldReturnNull [70 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.GetCategoryBySlugAsync_WithValidSlug_ShouldReturnCategory [24 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.GetCategoryBySlugAsync_WithInvalidSlug_ShouldReturnNull [1 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.GetCategoriesAsync_WithPagination_ShouldReturnCorrectPage [1 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.ToggleFeaturedAsync_WithInvalidId_ShouldReturnFalse [1 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.ReorderCategoriesAsync_ShouldUpdateDisplayOrders [2 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.GetCategoryByIdAsync_WithValidId_ShouldReturnCategory [1 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.GetCategoriesAsync_WithSearchFilter_ShouldReturnMatchingCategories [33 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.CreateCategoryAsync_WithValidRequest_ShouldCreateCategory [13 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.DeleteCategoryAsync_WithValidId_ShouldSoftDelete [1 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.CreateCategoryAsync_ShouldGenerateUniqueSlug [1 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.UpdateCategoryAsync_WithValidRequest_ShouldUpdateCategory [5 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.ToggleFeaturedAsync_WithValidId_ShouldToggleFeatureStatus [80 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.GetAllCategoriesAsync_ShouldReturnAllActiveCategories [20 ms]
+  Passed ShoppingCart.Tests.Services.CategoryServiceTests.GetFeaturedCategoriesAsync_ShouldReturnOnlyFeaturedCategories [23 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.GetProductsAsync_SortedByPriceDesc_ShouldReturnCorrectOrder [57 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.DeleteProductAsync_WithValidId_ShouldSoftDelete [2 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.GetProductsAsync_WithNoFilters_ShouldReturnActiveProducts [54 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.GetProductByIdAsync_WithInvalidId_ShouldReturnNull [1 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.GetProductsAsync_SortedByPriceAsc_ShouldReturnCorrectOrder [60 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.CreateProductAsync_ShouldGenerateUniqueSlug [21 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.GetProductsAsync_WithSearchFilter_ShouldReturnMatchingProducts [67 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.UpdateProductAsync_WithValidRequest_ShouldUpdateProduct [18 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.DeleteProductAsync_WithInvalidId_ShouldReturnFalse [10 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.GetProductsAsync_WithPagination_ShouldReturnCorrectPage [2 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.GetProductsAsync_WithCategoryFilter_ShouldReturnFilteredProducts [49 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.GetProductByIdAsync_WithValidId_ShouldReturnProduct [1 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.CreateProductAsync_WithValidRequest_ShouldCreateProduct [2 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.GetFeaturedProductsAsync_ShouldReturnOnlyFeaturedProducts [47 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.GetProductsAsync_WithFeaturedFilter_ShouldReturnOnlyFeaturedProducts [52 ms]
+[xUnit.net 00:00:02.42]   Finished:    ShoppingCart.Tests
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.GetProductBySlugAsync_WithValidSlug_ShouldReturnProduct [9 ms]
+  Passed ShoppingCart.Tests.Services.ProductServiceTests.ToggleFeaturedAsync_WithInvalidId_ShouldReturnFalse [1 ms]
+
+Total tests: 106
+     Passed: 105
+     Failed: 1
+ Total time: 3.1970 Seconds

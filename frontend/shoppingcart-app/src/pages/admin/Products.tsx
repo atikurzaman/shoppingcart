@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Plus, Search, Edit, Trash2, Eye, X, ArrowLeft, Package, Layers } from 'lucide-react'
 import { productService, CreateProductRequest, categoryService, Category, variantService, ProductVariant, CreateVariantRequest } from '../../services/productService'
 import toast from 'react-hot-toast'
+import api from '../../services/api'
 
 export default function AdminProducts() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -305,6 +306,40 @@ function AddProductView({
     weight: 0,
   })
 
+  const [images, setImages] = useState<{ imageUrl: string, isMain: boolean, displayOrder: number }[]>([])
+  const [isUploadingImage, setIsUploadingImage] = useState(false)
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const uploadData = new FormData()
+    uploadData.append('file', file)
+
+    setIsUploadingImage(true)
+    try {
+      const response = await api.post('/Upload/image', uploadData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      
+      const newImage = { 
+        imageUrl: response.data.url,
+        isMain: images.length === 0,
+        displayOrder: images.length 
+      }
+      setImages([...images, newImage])
+      setFormData(prev => ({ 
+        ...prev, 
+        images: [...(prev.images || []), newImage] 
+      }))
+      toast.success('Image uploaded successfully')
+    } catch (error) {
+      toast.error('Failed to upload image')
+    } finally {
+      setIsUploadingImage(false)
+    }
+  }
+
   // Additional UI state matching AddProduct.tsx
   const [brand, setBrand] = useState('')
   const [unit, setUnit] = useState('')
@@ -446,6 +481,35 @@ function AddProductView({
                   </button>
                 </span>
               ))}
+            </div>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-1">Product Images</label>
+            <div className="flex flex-wrap gap-4 items-center">
+              {images.map((img, idx) => (
+                <div key={idx} className="relative w-24 h-24 border rounded-lg overflow-hidden bg-gray-50">
+                  <img src={img.imageUrl} alt="preview" className="w-full h-full object-cover" />
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                       const newImages = images.filter((_, i) => i !== idx)
+                       setImages(newImages)
+                       setFormData(prev => ({ ...prev, images: newImages }))
+                    }} 
+                    className="absolute top-1 right-1 bg-white rounded-full p-1 shadow hover:text-red-600">
+                    <X className="w-3 h-3" />
+                  </button>
+                  {img.isMain && <span className="absolute bottom-0 left-0 right-0 bg-primary-600 text-white text-[10px] text-center py-0.5">Main</span>}
+                </div>
+              ))}
+              <div className="w-24 h-24 border-2 border-dashed rounded-lg flex items-center justify-center relative hover:bg-gray-50 cursor-pointer overflow-hidden">
+                <input type="file" accept="image/*" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" disabled={isUploadingImage} />
+                <div className="text-center">
+                  <Plus className="w-6 h-6 mx-auto text-gray-400" />
+                  <span className="text-xs text-gray-500">{isUploadingImage ? 'Uploading...' : 'Add Image'}</span>
+                </div>
+              </div>
             </div>
           </div>
           
@@ -606,7 +670,31 @@ function VariantModal({
     stockQuantity: 0,
     size: '',
     color: '',
+    imageUrl: '',
   })
+  
+  const [isUploadingImage, setIsUploadingImage] = useState(false)
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const uploadData = new FormData()
+    uploadData.append('file', file)
+
+    setIsUploadingImage(true)
+    try {
+      const response = await api.post('/Upload/image', uploadData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      setVariantForm(prev => ({ ...prev, imageUrl: response.data.url }))
+      toast.success('Variant image uploaded')
+    } catch (error) {
+      toast.error('Failed to upload variant image')
+    } finally {
+      setIsUploadingImage(false)
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -621,6 +709,7 @@ function VariantModal({
       price: variantForm.price || product.price,
       costPrice: variantForm.costPrice || product.price * 0.6,
       stockQuantity: variantForm.stockQuantity,
+      imageUrl: variantForm.imageUrl,
       isActive: true,
       attributes,
     })
@@ -724,6 +813,31 @@ function VariantModal({
                 <option value="Navy">Navy</option>
               </select>
             </div>
+          </div>
+          
+          <div>
+             <label className="block text-sm font-medium mb-1">Variant Image</label>
+             <div className="flex items-center gap-4">
+               {variantForm.imageUrl ? (
+                 <div className="relative w-20 h-20 border rounded-lg overflow-hidden bg-gray-50">
+                    <img src={variantForm.imageUrl} alt="preview" className="w-full h-full object-cover" />
+                    <button 
+                      type="button" 
+                      onClick={() => setVariantForm({ ...variantForm, imageUrl: '' })} 
+                      className="absolute top-1 right-1 bg-white rounded-full p-1 shadow hover:text-red-600">
+                      <X className="w-3 h-3" />
+                    </button>
+                 </div>
+               ) : (
+                 <div className="w-20 h-20 border-2 border-dashed rounded-lg flex items-center justify-center relative hover:bg-gray-50 cursor-pointer overflow-hidden">
+                   <input type="file" accept="image/*" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" disabled={isUploadingImage} />
+                   <div className="text-center">
+                     <Plus className="w-5 h-5 mx-auto text-gray-400" />
+                     <span className="text-xs text-gray-500">{isUploadingImage ? 'Uploading...' : 'Add'}</span>
+                   </div>
+                 </div>
+               )}
+             </div>
           </div>
 
           <div className="flex justify-end gap-4 pt-4">

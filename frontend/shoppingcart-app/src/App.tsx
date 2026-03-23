@@ -1,8 +1,7 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import MainLayout from './layouts/MainLayout'
 import AdminLayout from './layouts/AdminLayout'
-import Home from './pages/customer/Home'
 import ProductDetail from './pages/customer/ProductDetail'
 import Products from './pages/customer/Products'
 import Cart from './pages/customer/Cart'
@@ -26,20 +25,25 @@ import AdminPayments from './pages/admin/Payments'
 import AdminCoupons from './pages/admin/Coupons'
 import AdminReports from './pages/admin/Reports'
 import ProtectedRoute from './components/common/ProtectedRoute'
-import { useAppDispatch } from './hooks/useStore'
+import { useAppSelector, useAppDispatch } from './hooks/useStore'
 import { checkAuth } from './store/authSlice'
 
 function App() {
   const dispatch = useAppDispatch()
+  const { mode } = useAppSelector((state) => state.theme)
 
   useEffect(() => {
     dispatch(checkAuth())
   }, [dispatch])
 
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', mode === 'dark')
+  }, [mode])
+
   return (
     <Routes>
       <Route element={<MainLayout />}>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Navigate to="/products" replace />} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/:slug" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />

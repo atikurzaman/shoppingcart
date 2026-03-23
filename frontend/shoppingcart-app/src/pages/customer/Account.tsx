@@ -30,7 +30,7 @@ export default function Account() {
             <div>
               <h2 className="text-xl font-semibold">{user.firstName} {user.lastName}</h2>
               <span className="inline-block mt-1 px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded-full">
-                {user.role}
+                {user.roles?.join(', ') || 'Customer'}
               </span>
             </div>
           </div>
@@ -40,16 +40,10 @@ export default function Account() {
               <Mail className="w-5 h-5" />
               <span>{user.email}</span>
             </div>
-            {user.phone && (
+            {user.phoneNumber && (
               <div className="flex items-center gap-3 text-gray-600">
                 <Phone className="w-5 h-5" />
-                <span>{user.phone}</span>
-              </div>
-            )}
-            {user.address && (
-              <div className="flex items-center gap-3 text-gray-600">
-                <MapPin className="w-5 h-5" />
-                <span>{user.address}</span>
+                <span>{user.phoneNumber}</span>
               </div>
             )}
           </div>

@@ -39,29 +39,29 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-dark-300 py-12 px-4">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="text-gray-500 mt-2">Sign in to your account</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Welcome Back</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2">Sign in to your account</p>
         </div>
 
-        <div className="card p-8">
+        <div className="card p-8 dark:bg-dark-200 dark:border-gray-700">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {error && (
-              <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
+              <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-lg text-sm">
                 {error}
               </div>
             )}
 
             <div>
-              <label className="label">Email Address</label>
+              <label className="label dark:text-gray-300">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
                 <input
                   type="email"
                   {...register('email', { required: 'Email is required' })}
-                  className="input pl-10"
+                  className="input pl-10 dark:bg-dark-300 dark:text-white dark:border-gray-600 dark:focus:border-primary-500"
                   placeholder="you@example.com"
                 />
               </div>
@@ -69,19 +69,19 @@ export default function Login() {
             </div>
 
             <div>
-              <label className="label">Password</label>
+              <label className="label dark:text-gray-300">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   {...register('password', { required: 'Password is required' })}
-                  className="input pl-10 pr-10"
+                  className="input pl-10 pr-10 dark:bg-dark-300 dark:text-white dark:border-gray-600 dark:focus:border-primary-500"
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
@@ -91,10 +91,10 @@ export default function Login() {
 
             <div className="flex items-center justify-between">
               <label className="flex items-center">
-                <input type="checkbox" className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500" />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
+                <input type="checkbox" className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500 dark:border-gray-600" />
+                <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">Remember me</span>
               </label>
-              <Link to="/forgot-password" className="text-sm text-primary-600 hover:underline">
+              <Link to="/forgot-password" className="text-sm text-primary-600 hover:underline dark:text-primary-400">
                 Forgot password?
               </Link>
             </div>
@@ -119,9 +119,9 @@ export default function Login() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-400">
               Don't have an account?{' '}
-              <Link to="/register" className="text-primary-600 font-medium hover:underline">
+              <Link to="/register" className="text-primary-600 font-medium hover:underline dark:text-primary-400">
                 Create one
               </Link>
             </p>

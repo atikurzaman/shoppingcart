@@ -108,6 +108,7 @@ public class ProductVariant : AuditableEntity<int>
     public decimal Price { get; set; }
     public decimal CostPrice { get; set; }
     public int StockQuantity { get; set; } = 0;
+    public string? ImageUrl { get; set; }
     public bool IsActive { get; set; } = true;
 
     public virtual Product Product { get; set; } = null!;

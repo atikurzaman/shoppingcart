@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
+import '@testing-library/jest-dom'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import { MemoryRouter } from 'react-router-dom'
@@ -8,7 +9,7 @@ import Wishlist from '../../pages/customer/Wishlist'
 import api from '../../services/api'
 
 vi.mock('../../services/api', async (importOriginal) => {
-  const actual = await importOriginal()
+  const actual = await importOriginal<typeof import('../../services/api')>()
   return {
     ...actual,
     default: {
@@ -29,17 +30,30 @@ const createTestStore = (preloadedState = {}) => {
   })
 }
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+})
+
 describe('Wishlist Page', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    queryClient.clear()
   })
 
   const renderWishlist = (store = createTestStore()) => {
     return render(
       <Provider store={store}>
-        <MemoryRouter>
-          <Wishlist />
-        </MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <Wishlist />
+          </MemoryRouter>
+        </QueryClientProvider>
       </Provider>
     )
   }
@@ -85,16 +99,18 @@ describe('Wishlist Page', () => {
     it('should display wishlist items when present', async () => {
       vi.mocked(api.get).mockResolvedValueOnce({
         data: {
-          data: [
-            {
-              id: 1,
-              productId: 1,
-              productName: 'Test Product',
-              productImage: null,
-              price: 99.99,
-              addedAt: new Date().toISOString(),
-            },
-          ],
+          data: {
+            items: [
+              {
+                id: 1,
+                productId: 1,
+                productName: 'Test Product',
+                productImage: null,
+                price: 99.99,
+                addedAt: new Date().toISOString(),
+              },
+            ],
+          }
         },
       })
 

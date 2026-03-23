@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAppSelector } from '../../hooks/useStore'
-import { api } from '../../services/api'
+import api from '../../services/api'
 import { Package, ChevronRight, Clock } from 'lucide-react'
 
 interface Order {

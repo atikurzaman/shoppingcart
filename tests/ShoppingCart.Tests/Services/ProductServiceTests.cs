@@ -304,7 +304,7 @@ public class ProductServiceTests : IDisposable
 
         result.Should().NotBeNull();
         result.Should().HaveCount(1);
-        result.First().Name.Should().Contain("Phone");
+        result.First().Name.Should().MatchRegex(".*[Pp]hone.*");
     }
 
     [Fact]

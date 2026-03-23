@@ -9,7 +9,8 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
     {
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required")
-            .EmailAddress().WithMessage("Invalid email format");
+            .EmailAddress().WithMessage("Invalid email format")
+            .Matches(@"^[^@\s]+@[^@\s]+\.[^@\s]+$").WithMessage("Invalid email format");
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password is required")
@@ -23,7 +24,8 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
     {
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required")
-            .EmailAddress().WithMessage("Invalid email format");
+            .EmailAddress().WithMessage("Invalid email format")
+            .Matches(@"^[^@\s]+@[^@\s]+\.[^@\s]+$").WithMessage("Invalid email format");
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password is required")
@@ -44,7 +46,7 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
             .MaximumLength(50);
 
         RuleFor(x => x.PhoneNumber)
-            .Matches(@"^[\+]?[0-9\s\-]{10,15}$")
+            .Matches(@"^\+?[1-9]\d{9,14}$")
             .When(x => !string.IsNullOrEmpty(x.PhoneNumber))
             .WithMessage("Invalid phone number format");
     }
@@ -76,7 +78,8 @@ public class ForgotPasswordRequestValidator : AbstractValidator<ForgotPasswordRe
     {
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required")
-            .EmailAddress().WithMessage("Invalid email format");
+            .EmailAddress().WithMessage("Invalid email format")
+            .Matches(@"^[^@\s]+@[^@\s]+\.[^@\s]+$").WithMessage("Invalid email format");
     }
 }
 
@@ -89,7 +92,8 @@ public class ResetPasswordRequestValidator : AbstractValidator<ResetPasswordRequ
 
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required")
-            .EmailAddress().WithMessage("Invalid email format");
+            .EmailAddress().WithMessage("Invalid email format")
+            .Matches(@"^[^@\s]+@[^@\s]+\.[^@\s]+$").WithMessage("Invalid email format");
 
         RuleFor(x => x.NewPassword)
             .NotEmpty().WithMessage("New password is required")

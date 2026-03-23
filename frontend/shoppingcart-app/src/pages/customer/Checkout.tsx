@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppSelector, useAppDispatch } from '../../hooks/useStore'
 import { fetchCart, clearCart } from '../../store/cartSlice'
@@ -58,6 +58,18 @@ export default function Checkout() {
     isDefault: false,
   })
   const [savingAddress, setSavingAddress] = useState(false)
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      api.get('/addresses').then((res) => {
+        const addrList = res.data.data || []
+        setAddresses(addrList)
+        const defaultAddr = addrList.find((a: Address) => a.isDefault)
+        if (defaultAddr) setSelectedAddress(defaultAddr.id)
+        else if (addrList.length > 0) setSelectedAddress(addrList[0].id)
+      }).catch(() => toast.error('Failed to load addresses'))
+    }
+  }, [isAuthenticated])
 
   if (!isAuthenticated) {
     return (
