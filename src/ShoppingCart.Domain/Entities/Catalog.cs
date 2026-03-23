@@ -86,6 +86,7 @@ public class Product : AuditableEntity<int>
     public virtual ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();
     public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+    public virtual ICollection<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
 }
 
 public class ProductImage : AuditableEntity<int>
@@ -136,4 +137,21 @@ public class ProductAttributeValue : AuditableEntity<int>
     public virtual Product Product { get; set; } = null!;
     public virtual ProductVariant? Variant { get; set; }
     public virtual ProductAttribute Attribute { get; set; } = null!;
+}
+
+public class Tag : AuditableEntity<int>
+{
+    public string Name { get; set; } = string.Empty;
+    public string Slug { get; set; } = string.Empty;
+
+    public virtual ICollection<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
+}
+
+public class ProductTag : AuditableEntity<int>
+{
+    public int ProductId { get; set; }
+    public int TagId { get; set; }
+
+    public virtual Product Product { get; set; } = null!;
+    public virtual Tag Tag { get; set; } = null!;
 }

@@ -194,7 +194,62 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasForeignKey(si => si.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasMany(p => p.ProductTags)
+            .WithOne(pt => pt.Product)
+            .HasForeignKey(pt => pt.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.HasQueryFilter(p => !p.IsDeleted);
+    }
+}
+
+public class TagConfiguration : IEntityTypeConfiguration<Tag>
+{
+    public void Configure(EntityTypeBuilder<Tag> builder)
+    {
+        builder.ToTable("Tags");
+
+        builder.HasKey(t => t.Id);
+
+        builder.Property(t => t.Name)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        builder.Property(t => t.Slug)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        builder.HasIndex(t => t.Slug)
+            .IsUnique()
+            .HasDatabaseName("IX_Tags_Slug");
+
+        builder.HasQueryFilter(t => !t.IsDeleted);
+    }
+}
+
+public class ProductTagConfiguration : IEntityTypeConfiguration<ProductTag>
+{
+    public void Configure(EntityTypeBuilder<ProductTag> builder)
+    {
+        builder.ToTable("ProductTags");
+
+        builder.HasKey(pt => pt.Id);
+
+        builder.HasOne(pt => pt.Product)
+            .WithMany(p => p.ProductTags)
+            .HasForeignKey(pt => pt.ProductId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(pt => pt.Tag)
+            .WithMany(t => t.ProductTags)
+            .HasForeignKey(pt => pt.TagId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(pt => new { pt.ProductId, pt.TagId })
+            .IsUnique()
+            .HasDatabaseName("IX_ProductTags_ProductId_TagId");
+
+        builder.HasQueryFilter(pt => !pt.IsDeleted);
     }
 }
 

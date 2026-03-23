@@ -59,7 +59,11 @@ public class InventoryController : ControllerBase
     public async Task<ActionResult<ApiResponse<StockAdjustmentDto>>> AdjustStock([FromBody] StockAdjustmentRequest request)
     {
         var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-        var userId = userIdClaim != null && int.TryParse(userIdClaim.Value, out var id) ? id : 0;
+        int userId = 0;
+        if (userIdClaim != null && int.TryParse(userIdClaim.Value, out var parsedId))
+        {
+            userId = parsedId;
+        }
 
         var result = await _inventoryService.CreateStockAdjustmentAsync(new CreateStockAdjustmentRequest
         {

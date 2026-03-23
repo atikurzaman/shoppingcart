@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Package, ShoppingCart, Tags, Building2, Warehouse, Users, BarChart3, Settings, LogOut, Boxes, Star, Truck, CreditCard, Ticket, MessageSquare } from 'lucide-react'
+import { LayoutDashboard, Package, ShoppingCart, ShoppingBag, Tags, Building2, Warehouse, Users, BarChart3, Settings, LogOut, Boxes, Star, Truck, CreditCard, Ticket, MessageSquare } from 'lucide-react'
 import { useAppDispatch } from '../../hooks/useStore'
 import { logout } from '../../store/authSlice'
 
@@ -10,6 +10,7 @@ const navItems = [
   { to: '/admin/categories', icon: Tags, label: 'Categories' },
   { to: '/admin/brands', icon: Building2, label: 'Brands' },
   { to: '/admin/suppliers', icon: Building2, label: 'Suppliers' },
+  { to: '/admin/purchase-orders', icon: ShoppingBag, label: 'Purchase Orders' },
   { to: '/admin/warehouses', icon: Warehouse, label: 'Warehouses' },
   { to: '/admin/inventory', icon: Boxes, label: 'Inventory' },
   { to: '/admin/reviews', icon: Star, label: 'Reviews' },

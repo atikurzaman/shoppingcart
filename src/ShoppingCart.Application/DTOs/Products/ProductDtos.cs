@@ -40,6 +40,8 @@ public class ProductListDto
     public decimal? OldPrice { get; set; }
     public int StockQuantity { get; set; }
     public bool IsFeatured { get; set; }
+    public bool IsBestSeller { get; set; }
+    public bool IsNewArrival { get; set; }
     public bool IsActive { get; set; }
     public string CategoryName { get; set; } = string.Empty;
     public string? BrandName { get; set; }

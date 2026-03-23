@@ -17,6 +17,9 @@ interface ProductCardProps {
     ratingAverage: number
     reviewCount: number
     stockQuantity: number
+    isFeatured?: boolean
+    isBestSeller?: boolean
+    isNewArrival?: boolean
   }
   onAddToCart?: (productId: number) => void
   onAddToWishlist?: (productId: number) => void
@@ -87,6 +90,25 @@ export default function ProductCard({ product, onAddToCart, onAddToWishlist, isL
             No Image
           </div>
         )}
+
+        {/* Ribbons */}
+        <div className="absolute top-2 right-2 flex flex-col gap-1 items-end z-10">
+          {product.isFeatured && (
+            <span className="bg-primary-600 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded shadow-sm">
+              Featured
+            </span>
+          )}
+          {product.isBestSeller && (
+            <span className="bg-orange-500 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded shadow-sm">
+              Best Seller
+            </span>
+          )}
+          {product.isNewArrival && (
+            <span className="bg-green-600 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded shadow-sm">
+              New Arrival
+            </span>
+          )}
+        </div>
 
         {hasDiscount && (
           <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded z-10">

@@ -161,3 +161,30 @@ public class StockAdjustmentConfiguration : IEntityTypeConfiguration<StockAdjust
         builder.HasQueryFilter(sa => !sa.IsDeleted);
     }
 }
+
+public class ReorderRuleConfiguration : IEntityTypeConfiguration<ReorderRule>
+{
+    public void Configure(EntityTypeBuilder<ReorderRule> builder)
+    {
+        builder.ToTable("ReorderRules");
+
+        builder.HasKey(rr => rr.Id);
+
+        builder.HasOne(rr => rr.Product)
+            .WithMany()
+            .HasForeignKey(rr => rr.ProductId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(rr => rr.Variant)
+            .WithMany()
+            .HasForeignKey(rr => rr.VariantId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne(rr => rr.PreferredSupplier)
+            .WithMany()
+            .HasForeignKey(rr => rr.PreferredSupplierId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasQueryFilter(rr => !rr.IsDeleted);
+    }
+}

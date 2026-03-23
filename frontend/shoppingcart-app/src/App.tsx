@@ -24,6 +24,7 @@ import AdminShipments from './pages/admin/Shipments'
 import AdminPayments from './pages/admin/Payments'
 import AdminCoupons from './pages/admin/Coupons'
 import AdminReports from './pages/admin/Reports'
+import AdminPurchaseOrders from './pages/admin/PurchaseOrders'
 import ProtectedRoute from './components/common/ProtectedRoute'
 import { useAppSelector, useAppDispatch } from './hooks/useStore'
 import { checkAuth } from './store/authSlice'
@@ -73,6 +74,7 @@ function App() {
         <Route path="payments" element={<AdminPayments />} />
         <Route path="coupons" element={<AdminCoupons />} />
         <Route path="reports" element={<AdminReports />} />
+        <Route path="purchase-orders" element={<AdminPurchaseOrders />} />
       </Route>
     </Routes>
   )

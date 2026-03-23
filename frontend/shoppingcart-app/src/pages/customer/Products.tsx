@@ -14,11 +14,22 @@ export default function Products() {
   const search = searchParams.get('search') || undefined
   const categoryId = searchParams.get('categoryId') ? parseInt(searchParams.get('categoryId')!) : undefined
   const featured = searchParams.get('featured') === 'true' ? true : undefined
+  const bestSeller = searchParams.get('bestSeller') === 'true' ? true : undefined
+  const newArrival = searchParams.get('newArrival') === 'true' ? true : undefined
   const sortBy = searchParams.get('sortBy') || undefined
 
   const { data, isLoading } = useQuery({
-    queryKey: ['products', pageIndex, search, categoryId, featured, sortBy],
-    queryFn: () => productService.getProducts({ pageIndex, pageSize, search, categoryId, isFeatured: featured, sortBy }),
+    queryKey: ['products', pageIndex, search, categoryId, featured, bestSeller, newArrival, sortBy],
+    queryFn: () => productService.getProducts({ 
+      pageIndex, 
+      pageSize, 
+      search, 
+      categoryId, 
+      isFeatured: featured, 
+      isBestSeller: bestSeller,
+      isNewArrival: newArrival,
+      sortBy 
+    }),
   })
 
   const { data: categories } = useQuery({
@@ -113,10 +124,26 @@ export default function Products() {
             <button
               onClick={() => updateParams('featured', featured ? undefined : 'true')}
               className={`px-4 py-2 rounded-lg text-sm transition-colors ${
-                featured ? 'bg-primary-600 text-white' : 'bg-gray-100 dark:bg-dark-100 hover:bg-gray-200 dark:hover:bg-dark-300 text-gray-700 dark:text-gray-300'
+                featured ? 'bg-primary-600 text-white shadow-md' : 'bg-gray-100 dark:bg-dark-100 hover:bg-gray-200 dark:hover:bg-dark-300 text-gray-700 dark:text-gray-300'
               }`}
             >
               Featured
+            </button>
+            <button
+              onClick={() => updateParams('bestSeller', bestSeller ? undefined : 'true')}
+              className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                bestSeller ? 'bg-orange-600 text-white shadow-md' : 'bg-gray-100 dark:bg-dark-100 hover:bg-gray-200 dark:hover:bg-dark-300 text-gray-700 dark:text-gray-300'
+              }`}
+            >
+              Best Seller
+            </button>
+            <button
+              onClick={() => updateParams('newArrival', newArrival ? undefined : 'true')}
+              className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                newArrival ? 'bg-green-600 text-white shadow-md' : 'bg-gray-100 dark:bg-dark-100 hover:bg-gray-200 dark:hover:bg-dark-300 text-gray-700 dark:text-gray-300'
+              }`}
+            >
+              New Arrival
             </button>
           </div>
         </div>

@@ -169,9 +169,17 @@ export default function AdminProducts() {
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">{product.name}</p>
-                          {product.isFeatured && (
-                            <span className="text-xs text-primary-600">Featured</span>
-                          )}
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {product.isFeatured && (
+                              <span className="text-[10px] bg-primary-50 text-primary-600 px-1.5 py-0.5 rounded font-medium border border-primary-100">Featured</span>
+                            )}
+                            {product.isBestSeller && (
+                              <span className="text-[10px] bg-orange-50 text-orange-600 px-1.5 py-0.5 rounded font-medium border border-orange-100">Best Seller</span>
+                            )}
+                            {product.isNewArrival && (
+                              <span className="text-[10px] bg-green-50 text-green-600 px-1.5 py-0.5 rounded font-medium border border-green-100">New Arrival</span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </td>

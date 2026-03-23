@@ -28,6 +28,7 @@ public static class MappingConfiguration
             .NewConfig()
             .Map(dest => dest.CategoryName, src => src.Category.Name)
             .Map(dest => dest.BrandName, src => src.Brand != null ? src.Brand.Name : null)
+            .Map(dest => dest.StockQuantity, src => src.StockItems.Sum(s => s.AvailableQuantity))
             .Map(dest => dest.MainImageUrl, src => GetMainImageUrl(src));
 
         TypeAdapterConfig<Category, CategoryDto>

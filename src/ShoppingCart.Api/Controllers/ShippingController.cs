@@ -70,7 +70,11 @@ public class ShippingController : ControllerBase
     public async Task<ActionResult<ApiResponse<ShipmentDto>>> UpdateShipmentStatus([FromBody] UpdateShipmentStatusRequest request)
     {
         var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
-        var adminId = int.TryParse(userIdClaim?.Value, out var id) ? id : 0;
+        int adminId = 0;
+        if (userIdClaim != null && int.TryParse(userIdClaim.Value, out var parsedId))
+        {
+            adminId = parsedId;
+        }
 
         var shipment = await _shippingService.UpdateShipmentStatusAsync(adminId, request);
         return Ok(ApiResponse<ShipmentDto>.Success(shipment, "Shipment status updated"));

@@ -99,6 +99,8 @@ export const productService = {
     brandId?: number
     sortBy?: string
     isFeatured?: boolean
+    isBestSeller?: boolean
+    isNewArrival?: boolean
   }): Promise<PagedResult<Product>> => {
     const { data } = await api.get('/products', { params })
     return data.data
