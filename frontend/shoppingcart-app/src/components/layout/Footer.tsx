@@ -1,114 +1,105 @@
 import { Link } from 'react-router-dom'
-import { Facebook, Twitter, Instagram, Youtube, Send, ShoppingCart } from 'lucide-react'
+import { Facebook, Twitter, Instagram, Youtube, ShoppingCart, MapPin, Phone, Mail } from 'lucide-react'
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-100">
-      {/* Newsletter Section */}
-      <div className="bg-[#E3E8FF] py-12">
-        <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-between gap-8">
-          <div className="flex items-center gap-6">
-            <div className="bg-primary-600 p-4 rounded-2xl shadow-xl shadow-primary-200">
-              <Send className="h-8 w-8 text-white rotate-[-20deg]" />
-            </div>
+    <footer className="bg-white">
+      {/* Main footer */}
+      <div className="bg-[#1C2434] text-white">
+        <div className="container mx-auto px-4 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Brand */}
             <div>
-              <h3 className="text-2xl font-black text-gray-900 tracking-tight">Sign Up for Newsletter</h3>
-              <p className="text-gray-600 font-medium">Get the latest news, offers and coupons.</p>
-            </div>
-          </div>
-          <div className="w-full lg:w-auto flex-1 max-w-xl">
-            <form className="flex w-full items-center bg-white rounded-xl overflow-hidden shadow-sm p-1">
-              <input 
-                type="email" 
-                placeholder="Your email address" 
-                className="flex-1 px-6 py-3 outline-none text-gray-700 bg-transparent font-medium" 
-              />
-              <button className="bg-primary-600 hover:bg-primary-700 text-white px-10 py-3 rounded-lg font-bold transition-all">
-                Subscribe
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 pt-16 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          {/* Brand Info */}
-          <div className="space-y-6">
-            <Link to="/" className="flex items-center">
-              <div className="bg-primary-600 p-2 rounded-lg">
-                <ShoppingCart className="h-5 w-5 text-white" />
+              <Link to="/" className="flex items-center gap-2 mb-5">
+                <div className="bg-primary-600 p-1.5 rounded-full">
+                  <ShoppingCart className="h-5 w-5 text-white" />
+                </div>
+                <span className="text-xl font-black text-white tracking-tight">ShopCart</span>
+              </Link>
+              <p className="text-gray-400 text-sm leading-relaxed mb-5">
+                We're the most professional e-commerce platform in Bangladesh. Providing the best quality products for our valuable customers since 2024.
+              </p>
+              <div className="flex gap-2">
+                {[Facebook, Twitter, Instagram, Youtube].map((Icon, i) => (
+                  <a key={i} href="#" className="w-8 h-8 bg-white/10 hover:bg-primary-600 flex items-center justify-center transition-colors">
+                    <Icon className="h-4 w-4 text-white" />
+                  </a>
+                ))}
               </div>
-              <span className="ml-3 font-black text-xl text-gray-900 tracking-tight">Shop<span className="text-primary-600">Cart</span></span>
-            </Link>
-            <p className="text-gray-500 leading-relaxed font-medium">
-              We're the most professional e-commerce platform in Bangladesh. Providing the best quality products for our valuable customers since 2024.
-            </p>
-            <div className="flex space-x-3">
-              {[Facebook, Twitter, Instagram, Youtube].map((Icon, i) => (
-                <a key={i} href="#" className="w-10 h-10 flex items-center justify-center bg-gray-50 text-gray-400 hover:bg-primary-600 hover:text-white rounded-lg transition-all border border-gray-100">
-                  <Icon className="h-5 w-5" />
-                </a>
-              ))}
             </div>
-          </div>
 
-          {/* Feature Links */}
-          <div>
-            <h4 className="text-gray-900 font-bold text-lg mb-6">Feature</h4>
-            <ul className="space-y-4 text-gray-500 font-medium tracking-wide">
-              <li><Link to="/about" className="hover:text-primary-600 transition-colors">About Us</Link></li>
-              <li><Link to="/terms" className="hover:text-primary-600 transition-colors">Terms Conditions</Link></li>
-              <li><Link to="/seller-signup" className="hover:text-primary-600 transition-colors">Become a Seller</Link></li>
-              <li><Link to="/contact" className="hover:text-primary-600 transition-colors">Contact Us</Link></li>
-              <li><Link to="/faq" className="hover:text-primary-600 transition-colors">Support / FAQ</Link></li>
-            </ul>
-          </div>
+            {/* Support */}
+            <div>
+              <h4 className="text-white font-bold text-base mb-5">Support</h4>
+              <ul className="space-y-3">
+                {[
+                  { label: 'Contact Us', to: '/contact' },
+                  { label: 'Blogs', to: '/blogs' },
+                  { label: 'Order Tracking', to: '/orders' },
+                  { label: 'About Us', to: '/about' },
+                  { label: 'FAQ', to: '/faq' },
+                ].map((item) => (
+                  <li key={item.to}>
+                    <Link to={item.to} className="text-gray-400 hover:text-white text-sm transition-colors">
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-gray-900 font-bold text-lg mb-6">Quick Links</h4>
-            <ul className="space-y-4 text-gray-500 font-medium tracking-wide">
-              <li><Link to="/products" className="hover:text-primary-600 transition-colors">Shop</Link></li>
-              <li><Link to="/cart" className="hover:text-primary-600 transition-colors">Shopping Cart</Link></li>
-              <li><Link to="/wishlist" className="hover:text-primary-600 transition-colors">Wishlist</Link></li>
-              <li><Link to="/compare" className="hover:text-primary-600 transition-colors">Compare</Link></li>
-              <li><Link to="/track-order" className="hover:text-primary-600 transition-colors">Track Order</Link></li>
-            </ul>
-          </div>
+            {/* Policies */}
+            <div>
+              <h4 className="text-white font-bold text-base mb-5">Policies</h4>
+              <ul className="space-y-3">
+                {[
+                  { label: 'Return Policy', to: '/return-policy' },
+                  { label: 'Privacy Policy', to: '/privacy-policy' },
+                  { label: 'Terms & Conditions', to: '/terms' },
+                  { label: 'Become a Seller', to: '/seller-signup' },
+                  { label: 'Refund Policy', to: '/refund-policy' },
+                ].map((item) => (
+                  <li key={item.to}>
+                    <Link to={item.to} className="text-gray-400 hover:text-white text-sm transition-colors">
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Contact Info */}
-          <div>
-            <h4 className="text-gray-900 font-bold text-lg mb-6">Contact</h4>
-            <ul className="space-y-5 text-gray-500 font-medium italic">
-              <li className="flex items-start gap-4 not-italic">
-                <div className="w-10 h-10 shrink-0 bg-primary-50 rounded-lg flex items-center justify-center">
-                  <Send className="h-4 w-4 text-primary-600" />
-                </div>
-                <span>Gulshan-1, Dhaka-1212, <br />Bangladesh</span>
-              </li>
-              <li className="flex items-center gap-4 not-italic">
-                <div className="w-10 h-10 shrink-0 bg-primary-50 rounded-lg flex items-center justify-center">
-                  <Send className="h-4 w-4 text-primary-600" />
-                </div>
-                <span>support@shopcart.com</span>
-              </li>
-              <li className="flex items-center gap-4 not-italic">
-                <div className="w-10 h-10 shrink-0 bg-primary-50 rounded-lg flex items-center justify-center">
-                  <Send className="h-4 w-4 text-primary-600" />
-                </div>
-                <span>+880 1234 567 890</span>
-              </li>
-            </ul>
+            {/* Contact Us */}
+            <div>
+              <h4 className="text-white font-bold text-base mb-5">Contact Us</h4>
+              <ul className="space-y-4">
+                <li className="flex items-start gap-3">
+                  <MapPin className="h-4 w-4 text-primary-400 mt-0.5 shrink-0" />
+                  <span className="text-gray-400 text-sm">Gulshan-1, Dhaka-1212, Bangladesh</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Phone className="h-4 w-4 text-primary-400 shrink-0" />
+                  <span className="text-gray-400 text-sm">+880 1234 567 890</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Mail className="h-4 w-4 text-primary-400 shrink-0" />
+                  <span className="text-gray-400 text-sm">support@shopcart.com</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-100 mt-16 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-gray-400 font-medium text-sm tracking-wide">
-            &copy; {new Date().getFullYear()} <span className="text-gray-900 font-bold">ShopCart</span>. All rights reserved.
-          </p>
-          <div className="flex items-center gap-4">
-             <img src="https://shopo-ecom.vercel.app/assets/images/payment-getway.png" alt="Payment" className="h-6 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
+        {/* Bottom bar */}
+        <div className="border-t border-white/10">
+          <div className="container mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-3">
+            <p className="text-gray-500 text-sm">
+              © {new Date().getFullYear()} <span className="text-white font-bold">ShopCart</span>. All rights reserved.
+            </p>
+            <img
+              src="https://shopo-ecom.vercel.app/assets/images/payment-getway.png"
+              alt="Payment Methods"
+              className="h-6 opacity-60 hover:opacity-100 transition-opacity"
+            />
           </div>
         </div>
       </div>
