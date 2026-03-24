@@ -1,56 +1,115 @@
 import { Link } from 'react-router-dom'
+import { Facebook, Twitter, Instagram, Youtube, Send, ShoppingCart } from 'lucide-react'
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div>
-            <h3 className="text-white font-bold text-lg mb-4">ShoppingCart</h3>
-            <p className="text-sm mb-4">Your trusted online shopping destination for quality products at great prices.</p>
-            <div className="flex space-x-4">
-              <a href="#" className="hover:text-primary-400 transition-colors">
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-              </a>
-              <a href="#" className="hover:text-primary-400 transition-colors">
-                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-              </a>
+    <footer className="bg-white border-t border-gray-100">
+      {/* Newsletter Section */}
+      <div className="bg-[#E3E8FF] py-12">
+        <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-between gap-8">
+          <div className="flex items-center gap-6">
+            <div className="bg-primary-600 p-4 rounded-2xl shadow-xl shadow-primary-200">
+              <Send className="h-8 w-8 text-white rotate-[-20deg]" />
+            </div>
+            <div>
+              <h3 className="text-2xl font-black text-gray-900 tracking-tight">Sign Up for Newsletter</h3>
+              <p className="text-gray-600 font-medium">Get the latest news, offers and coupons.</p>
+            </div>
+          </div>
+          <div className="w-full lg:w-auto flex-1 max-w-xl">
+            <form className="flex w-full items-center bg-white rounded-xl overflow-hidden shadow-sm p-1">
+              <input 
+                type="email" 
+                placeholder="Your email address" 
+                className="flex-1 px-6 py-3 outline-none text-gray-700 bg-transparent font-medium" 
+              />
+              <button className="bg-primary-600 hover:bg-primary-700 text-white px-10 py-3 rounded-lg font-bold transition-all">
+                Subscribe
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 pt-16 pb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {/* Brand Info */}
+          <div className="space-y-6">
+            <Link to="/" className="flex items-center">
+              <div className="bg-primary-600 p-2 rounded-lg">
+                <ShoppingCart className="h-5 w-5 text-white" />
+              </div>
+              <span className="ml-3 font-black text-xl text-gray-900 tracking-tight">Shop<span className="text-primary-600">Cart</span></span>
+            </Link>
+            <p className="text-gray-500 leading-relaxed font-medium">
+              We're the most professional e-commerce platform in Bangladesh. Providing the best quality products for our valuable customers since 2024.
+            </p>
+            <div className="flex space-x-3">
+              {[Facebook, Twitter, Instagram, Youtube].map((Icon, i) => (
+                <a key={i} href="#" className="w-10 h-10 flex items-center justify-center bg-gray-50 text-gray-400 hover:bg-primary-600 hover:text-white rounded-lg transition-all border border-gray-100">
+                  <Icon className="h-5 w-5" />
+                </a>
+              ))}
             </div>
           </div>
 
+          {/* Feature Links */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Quick Links</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link to="/products" className="hover:text-primary-400 transition-colors">All Products</Link></li>
-              <li><Link to="/products?featured=true" className="hover:text-primary-400 transition-colors">Featured</Link></li>
-              <li><Link to="/products?isNewArrival=true" className="hover:text-primary-400 transition-colors">New Arrivals</Link></li>
-              <li><Link to="/cart" className="hover:text-primary-400 transition-colors">Cart</Link></li>
+            <h4 className="text-gray-900 font-bold text-lg mb-6">Feature</h4>
+            <ul className="space-y-4 text-gray-500 font-medium tracking-wide">
+              <li><Link to="/about" className="hover:text-primary-600 transition-colors">About Us</Link></li>
+              <li><Link to="/terms" className="hover:text-primary-600 transition-colors">Terms Conditions</Link></li>
+              <li><Link to="/seller-signup" className="hover:text-primary-600 transition-colors">Become a Seller</Link></li>
+              <li><Link to="/contact" className="hover:text-primary-600 transition-colors">Contact Us</Link></li>
+              <li><Link to="/faq" className="hover:text-primary-600 transition-colors">Support / FAQ</Link></li>
             </ul>
           </div>
 
+          {/* Quick Links */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Customer Service</h4>
-            <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-primary-400 transition-colors">Contact Us</a></li>
-              <li><a href="#" className="hover:text-primary-400 transition-colors">FAQs</a></li>
-              <li><a href="#" className="hover:text-primary-400 transition-colors">Shipping Info</a></li>
-              <li><a href="#" className="hover:text-primary-400 transition-colors">Returns</a></li>
+            <h4 className="text-gray-900 font-bold text-lg mb-6">Quick Links</h4>
+            <ul className="space-y-4 text-gray-500 font-medium tracking-wide">
+              <li><Link to="/products" className="hover:text-primary-600 transition-colors">Shop</Link></li>
+              <li><Link to="/cart" className="hover:text-primary-600 transition-colors">Shopping Cart</Link></li>
+              <li><Link to="/wishlist" className="hover:text-primary-600 transition-colors">Wishlist</Link></li>
+              <li><Link to="/compare" className="hover:text-primary-600 transition-colors">Compare</Link></li>
+              <li><Link to="/track-order" className="hover:text-primary-600 transition-colors">Track Order</Link></li>
             </ul>
           </div>
 
+          {/* Contact Info */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Contact</h4>
-            <ul className="space-y-2 text-sm">
-              <li>123 Commerce Street</li>
-              <li>Dhaka, Bangladesh</li>
-              <li>Phone: +880 1234-567890</li>
-              <li>Email: support@shoppingcart.com</li>
+            <h4 className="text-gray-900 font-bold text-lg mb-6">Contact</h4>
+            <ul className="space-y-5 text-gray-500 font-medium italic">
+              <li className="flex items-start gap-4 not-italic">
+                <div className="w-10 h-10 shrink-0 bg-primary-50 rounded-lg flex items-center justify-center">
+                  <Send className="h-4 w-4 text-primary-600" />
+                </div>
+                <span>Gulshan-1, Dhaka-1212, <br />Bangladesh</span>
+              </li>
+              <li className="flex items-center gap-4 not-italic">
+                <div className="w-10 h-10 shrink-0 bg-primary-50 rounded-lg flex items-center justify-center">
+                  <Send className="h-4 w-4 text-primary-600" />
+                </div>
+                <span>support@shopcart.com</span>
+              </li>
+              <li className="flex items-center gap-4 not-italic">
+                <div className="w-10 h-10 shrink-0 bg-primary-50 rounded-lg flex items-center justify-center">
+                  <Send className="h-4 w-4 text-primary-600" />
+                </div>
+                <span>+880 1234 567 890</span>
+              </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-8 text-sm text-center">
-          <p>&copy; {new Date().getFullYear()} ShoppingCart. All rights reserved.</p>
+        <div className="border-t border-gray-100 mt-16 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-gray-400 font-medium text-sm tracking-wide">
+            &copy; {new Date().getFullYear()} <span className="text-gray-900 font-bold">ShopCart</span>. All rights reserved.
+          </p>
+          <div className="flex items-center gap-4">
+             <img src="https://shopo-ecom.vercel.app/assets/images/payment-getway.png" alt="Payment" className="h-6 grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all cursor-pointer" />
+          </div>
         </div>
       </div>
     </footer>

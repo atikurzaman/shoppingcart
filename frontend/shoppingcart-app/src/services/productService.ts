@@ -101,6 +101,8 @@ export const productService = {
     isFeatured?: boolean
     isBestSeller?: boolean
     isNewArrival?: boolean
+    minPrice?: number
+    maxPrice?: number
   }): Promise<PagedResult<Product>> => {
     const { data } = await api.get('/products', { params })
     return data.data
@@ -182,6 +184,33 @@ export const categoryService = {
 
   getCategory: async (idOrSlug: string, isSlug = false): Promise<Category> => {
     const url = isSlug ? `/categories/slug/${idOrSlug}` : `/categories/${idOrSlug}`
+    const { data } = await api.get(url)
+    return data.data
+  },
+}
+
+export interface Brand {
+  id: number
+  name: string
+  slug: string
+  logoUrl?: string
+  isFeatured: boolean
+  productCount: number
+}
+
+export const brandService = {
+  getBrands: async (): Promise<Brand[]> => {
+    const { data } = await api.get('/brands/all')
+    return data.data
+  },
+
+  getFeaturedBrands: async (): Promise<Brand[]> => {
+    const { data } = await api.get('/brands/featured')
+    return data.data
+  },
+
+  getBrand: async (idOrSlug: string, isSlug = false): Promise<Brand> => {
+    const url = isSlug ? `/brands/slug/${idOrSlug}` : `/brands/${idOrSlug}`
     const { data } = await api.get(url)
     return data.data
   },

@@ -35,10 +35,12 @@ public class ProductsController : ControllerBase
         [FromQuery] string? sortBy = null,
         [FromQuery] bool? isFeatured = null,
         [FromQuery] bool? isBestSeller = null,
-        [FromQuery] bool? isNewArrival = null)
+        [FromQuery] bool? isNewArrival = null,
+        [FromQuery] decimal? minPrice = null,
+        [FromQuery] decimal? maxPrice = null)
     {
         var products = await _productService.GetProductsAsync(
-            pageIndex, pageSize, search, categoryId, brandId, sortBy, isFeatured, isBestSeller, isNewArrival);
+            pageIndex, pageSize, search, categoryId, brandId, sortBy, isFeatured, isBestSeller, isNewArrival, minPrice, maxPrice);
         return Ok(ApiResponse<PagedResult<ProductListDto>>.Success(products));
     }
 

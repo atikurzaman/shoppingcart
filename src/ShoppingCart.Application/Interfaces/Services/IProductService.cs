@@ -5,7 +5,7 @@ namespace ShoppingCart.Application.Interfaces.Services;
 
 public interface IProductService
 {
-    Task<PagedResult<ProductListDto>> GetProductsAsync(int pageIndex, int pageSize, string? search, int? categoryId, int? brandId, string? sortBy, bool? isFeatured, bool? isBestSeller = null, bool? isNewArrival = null);
+    Task<PagedResult<ProductListDto>> GetProductsAsync(int pageIndex, int pageSize, string? search, int? categoryId, int? brandId, string? sortBy, bool? isFeatured, bool? isBestSeller = null, bool? isNewArrival = null, decimal? minPrice = null, decimal? maxPrice = null);
     Task<ProductDto?> GetProductByIdAsync(int id);
     Task<ProductDto?> GetProductBySlugAsync(string slug);
     Task<ProductDto> CreateProductAsync(CreateProductRequest request);

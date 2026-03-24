@@ -19,7 +19,7 @@ public class ProductService : IProductService
     }
 
     public async Task<PagedResult<ProductListDto>> GetProductsAsync(
-        int pageIndex, int pageSize, string? search, int? categoryId, int? brandId, string? sortBy, bool? isFeatured, bool? isBestSeller = null, bool? isNewArrival = null)
+        int pageIndex, int pageSize, string? search, int? categoryId, int? brandId, string? sortBy, bool? isFeatured, bool? isBestSeller = null, bool? isNewArrival = null, decimal? minPrice = null, decimal? maxPrice = null)
     {
         var query = _context.Products
             .Include(p => p.Category)
@@ -57,6 +57,16 @@ public class ProductService : IProductService
         if (isNewArrival.HasValue && isNewArrival.Value)
         {
             query = query.Where(p => p.IsNewArrival);
+        }
+
+        if (minPrice.HasValue)
+        {
+            query = query.Where(p => p.Price >= minPrice.Value);
+        }
+
+        if (maxPrice.HasValue)
+        {
+            query = query.Where(p => p.Price <= maxPrice.Value);
         }
 
         query = sortBy?.ToLower() switch
