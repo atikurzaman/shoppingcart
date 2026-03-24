@@ -1,18 +1,27 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Search, ShoppingCart, Heart, User, Menu, X, Sun, Moon, ChevronDown, Phone, Mail, RotateCcw, LayoutGrid } from 'lucide-react'
+import { Search, ShoppingCart, Heart, User, Menu, X, Sun, Moon, ChevronDown, Phone, Mail, RotateCcw, LayoutGrid, ChevronRight } from 'lucide-react'
 import { useAppSelector, useAppDispatch } from '../../hooks/useStore'
 import { logout } from '../../store/authSlice'
 import { toggleTheme } from '../../store/themeSlice'
+import { useQuery } from '@tanstack/react-query'
+import { categoryService } from '../../services/productService'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [activeCategory, setActiveCategory] = useState<number | null>(null)
+  
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { user, isAuthenticated } = useAppSelector((state) => state.auth)
   const { cart } = useAppSelector((state) => state.cart)
   const { mode } = useAppSelector((state) => state.theme)
+
+  const { data: categoryTree } = useQuery({
+    queryKey: ['categoryTree'],
+    queryFn: () => categoryService.getCategoryTree(),
+  })
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -157,13 +166,59 @@ export default function Header() {
                 All Categories
                 <ChevronDown className="h-4 w-4 ml-auto group-hover:rotate-180 transition-transform" />
               </button>
-              {/* Simple Mock Categories List */}
-              <div className="absolute top-full left-0 w-full bg-white shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-gray-100 transform translate-y-2 group-hover:translate-y-0 py-2">
-                <Link to="/products?category=electronics" className="block px-6 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">Electronics</Link>
-                <Link to="/products?category=fashion" className="block px-6 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">Fashion & Apparel</Link>
-                <Link to="/products?category=home" className="block px-6 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">Home & Living</Link>
-                <Link to="/products?category=beauty" className="block px-6 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">Beauty & Health</Link>
-                <Link to="/products?category=sports" className="block px-6 py-2.5 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 transition-colors">Sports & Outdoors</Link>
+              
+              {/* Three-Level MEGA MENU */}
+              <div className="absolute top-full left-0 w-[900px] bg-white shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-gray-100 flex min-h-[400px]">
+                {/* Level 1: Root Categories */}
+                <div className="w-[280px] bg-gray-50/50 border-r border-gray-100 py-4">
+                  {categoryTree?.map((root) => (
+                    <div 
+                      key={root.id}
+                      onMouseEnter={() => setActiveCategory(root.id)}
+                      className={`px-6 py-3 cursor-pointer flex items-center justify-between group/root ${activeCategory === root.id ? 'bg-white text-primary-600 shadow-sm border-l-4 border-primary-600' : 'text-gray-600 hover:text-primary-600'}`}
+                    >
+                      <span className="text-sm font-bold">{root.name}</span>
+                      {root.subCategories && root.subCategories.length > 0 && (
+                        <ChevronRight className={`h-4 w-4 transition-transform ${activeCategory === root.id ? 'translate-x-1' : ''}`} />
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Level 2 & 3: Sub-categories Content */}
+                <div className="flex-1 p-8 grid grid-cols-2 gap-x-8 gap-y-10 overflow-y-auto max-h-[600px]">
+                  {activeCategory && categoryTree?.find(c => c.id === activeCategory)?.subCategories?.map((sub) => (
+                    <div key={sub.id} className="space-y-4">
+                      <Link 
+                        to={`/products?categoryId=${sub.id}`}
+                        className="text-base font-black text-gray-900 hover:text-primary-600 block border-b border-gray-50 pb-2"
+                      >
+                        {sub.name}
+                      </Link>
+                      
+                      {/* Level 3: Deeper items */}
+                      <ul className="space-y-2.5">
+                        {sub.subCategories?.map((item) => (
+                          <li key={item.id}>
+                            <Link 
+                              to={`/products?categoryId=${item.id}`}
+                              className="text-sm font-medium text-gray-500 hover:text-primary-600 hover:translate-x-1 transition-all inline-block"
+                            >
+                              {item.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                  
+                  {!activeCategory && (
+                    <div className="col-span-2 h-full center flex-col text-gray-300">
+                      <LayoutGrid className="h-16 w-16 mb-4 opacity-10" />
+                      <p className="font-bold text-lg">Select a category to explore</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

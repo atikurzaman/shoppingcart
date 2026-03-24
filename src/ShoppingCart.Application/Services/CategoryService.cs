@@ -172,6 +172,34 @@ public class CategoryService : ICategoryService
         return true;
     }
 
+    public async Task<List<CategoryDto>> GetCategoryTreeAsync()
+    {
+        var allCategories = await _context.Categories
+            .Include(c => c.Products)
+            .Where(c => c.IsActive && !c.IsDeleted)
+            .OrderBy(c => c.DisplayOrder)
+            .ToListAsync();
+
+        var categoryDtos = allCategories.Adapt<List<CategoryDto>>();
+        
+        var categoryMap = categoryDtos.ToDictionary(c => c.Id);
+        var rootCategories = new List<CategoryDto>();
+
+        foreach (var category in categoryDtos)
+        {
+            if (category.ParentCategoryId.HasValue && categoryMap.ContainsKey(category.ParentCategoryId.Value))
+            {
+                categoryMap[category.ParentCategoryId.Value].SubCategories.Add(category);
+            }
+            else
+            {
+                rootCategories.Add(category);
+            }
+        }
+
+        return rootCategories;
+    }
+
     private string GenerateUniqueSlug(string name)
     {
         var slug = name.ToLowerInvariant().Replace(" ", "-");

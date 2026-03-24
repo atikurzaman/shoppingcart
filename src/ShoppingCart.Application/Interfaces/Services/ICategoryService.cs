@@ -15,4 +15,5 @@ public interface ICategoryService
     Task<bool> DeleteCategoryAsync(int id);
     Task<bool> ToggleFeaturedAsync(int id);
     Task<bool> ReorderCategoriesAsync(List<(int Id, int DisplayOrder)> orders);
+    Task<List<CategoryDto>> GetCategoryTreeAsync();
 }

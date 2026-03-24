@@ -42,6 +42,13 @@ public class CategoriesController : ControllerBase
         return Ok(ApiResponse<List<CategoryListDto>>.Success(categories));
     }
 
+    [HttpGet("tree")]
+    public async Task<ActionResult<ApiResponse<List<CategoryDto>>>> GetCategoryTree()
+    {
+        var categories = await _categoryService.GetCategoryTreeAsync();
+        return Ok(ApiResponse<List<CategoryDto>>.Success(categories));
+    }
+
     [HttpGet("featured")]
     public async Task<ActionResult<ApiResponse<List<CategoryDto>>>> GetFeaturedCategories()
     {

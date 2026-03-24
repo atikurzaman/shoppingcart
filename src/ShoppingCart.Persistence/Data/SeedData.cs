@@ -237,44 +237,90 @@ public static class SeedData
             await context.SaveChangesAsync();
         }
 
+        // Categories Seeding (Level 1)
         if (!await context.Categories.AnyAsync())
         {
-            var electronics = new Category { Name = "Electronics", Slug = "electronics", Description = "Electronic devices and accessories", IsActive = true, DisplayOrder = 1, IsFeatured = true };
-            var clothing = new Category { Name = "Clothing", Slug = "clothing", Description = "Fashion and apparel", IsActive = true, DisplayOrder = 2, IsFeatured = true };
-            var home = new Category { Name = "Home & Garden", Slug = "home-garden", Description = "Home decor and garden supplies", IsActive = true, DisplayOrder = 3, IsFeatured = true };
-            var sports = new Category { Name = "Sports", Slug = "sports", Description = "Sports equipment and fitness", IsActive = true, DisplayOrder = 4, IsFeatured = false };
-            var books = new Category { Name = "Books", Slug = "books", Description = "Books and literature", IsActive = true, DisplayOrder = 5, IsFeatured = false };
+            context.Categories.AddRange(
+                new Category { Name = "Electronics", Slug = "electronics", Description = "Electronic devices and accessories", IsActive = true, DisplayOrder = 1, IsFeatured = true },
+                new Category { Name = "Clothing", Slug = "clothing", Description = "Fashion and apparel", IsActive = true, DisplayOrder = 2, IsFeatured = true },
+                new Category { Name = "Home & Garden", Slug = "home-garden", Description = "Home decor and garden supplies", IsActive = true, DisplayOrder = 3, IsFeatured = true },
+                new Category { Name = "Sports", Slug = "sports", Description = "Sports equipment and fitness", IsActive = true, DisplayOrder = 4, IsFeatured = false },
+                new Category { Name = "Books", Slug = "books", Description = "Books and literature", IsActive = true, DisplayOrder = 5, IsFeatured = false }
+            );
+            await context.SaveChangesAsync();
+        }
 
-            context.Categories.AddRange(electronics, clothing, home, sports, books);
+        // Fetch Root Categories for Hierarchical Seeding
+        var electronics = await context.Categories.FirstOrDefaultAsync(c => c.Name == "Electronics");
+        var clothing = await context.Categories.FirstOrDefaultAsync(c => c.Name == "Clothing");
+        var home = await context.Categories.FirstOrDefaultAsync(c => c.Name == "Home & Garden");
+        var sports = await context.Categories.FirstOrDefaultAsync(c => c.Name == "Sports");
+        var books = await context.Categories.FirstOrDefaultAsync(c => c.Name == "Books");
+
+        // Subcategories Seeding (Level 2 & 3)
+        if (electronics != null && !await context.Categories.AnyAsync(c => c.ParentCategoryId == electronics.Id))
+        {
+            var computers = new Category { Name = "Computers", Slug = "computers", ParentCategoryId = electronics.Id, IsActive = true, DisplayOrder = 1 };
+            var mobiles = new Category { Name = "Mobile Phones", Slug = "mobile-phones", ParentCategoryId = electronics.Id, IsActive = true, DisplayOrder = 2 };
+            var gadgets = new Category { Name = "Gadgets", Slug = "gadgets", ParentCategoryId = electronics.Id, IsActive = true, DisplayOrder = 3 };
+            
+            context.Categories.AddRange(computers, mobiles, gadgets);
             await context.SaveChangesAsync();
 
-            if (!await context.Products.AnyAsync())
+            context.Categories.AddRange(
+                new Category { Name = "Laptops", Slug = "laptops", ParentCategoryId = computers.Id, IsActive = true, DisplayOrder = 1 },
+                new Category { Name = "Desktops", Slug = "desktops", ParentCategoryId = computers.Id, IsActive = true, DisplayOrder = 2 },
+                new Category { Name = "Smartphones", Slug = "smartphones", ParentCategoryId = mobiles.Id, IsActive = true, DisplayOrder = 1 },
+                new Category { Name = "Tablets", Slug = "tablets", ParentCategoryId = mobiles.Id, IsActive = true, DisplayOrder = 2 },
+                new Category { Name = "Smart Watches", Slug = "smart-watches", ParentCategoryId = gadgets.Id, IsActive = true, DisplayOrder = 1 }
+            );
+            await context.SaveChangesAsync();
+        }
+
+        if (clothing != null && !await context.Categories.AnyAsync(c => c.ParentCategoryId == clothing.Id))
+        {
+            var mens = new Category { Name = "Men's Fashion", Slug = "mens-fashion", ParentCategoryId = clothing.Id, IsActive = true, DisplayOrder = 1 };
+            var womens = new Category { Name = "Women's Fashion", Slug = "womens-fashion", ParentCategoryId = clothing.Id, IsActive = true, DisplayOrder = 2 };
+            
+            context.Categories.AddRange(mens, womens);
+            await context.SaveChangesAsync();
+
+            context.Categories.AddRange(
+                new Category { Name = "T-Shirts", Slug = "t-shirts", ParentCategoryId = mens.Id, IsActive = true, DisplayOrder = 1 },
+                new Category { Name = "Jeans", Slug = "jeans", ParentCategoryId = mens.Id, IsActive = true, DisplayOrder = 2 },
+                new Category { Name = "Dresses", Slug = "dresses", ParentCategoryId = womens.Id, IsActive = true, DisplayOrder = 1 },
+                new Category { Name = "Handbags", Slug = "handbags", ParentCategoryId = womens.Id, IsActive = true, DisplayOrder = 2 }
+            );
+            await context.SaveChangesAsync();
+        }
+
+        // Products Seeding
+        if (!await context.Products.AnyAsync() && electronics != null && clothing != null && home != null && sports != null && books != null)
+        {
+            var products = new[]
             {
-                var products = new[]
-                {
-                    new Product { Name = "Wireless Bluetooth Headphones", Slug = "wireless-bluetooth-headphones", SKU = "ELEC-001", Price = 2499.00m, CostPrice = 1500.00m, CategoryId = electronics.Id, ShortDescription = "Premium wireless headphones with noise cancellation", Description = "Experience high-quality sound with our premium wireless Bluetooth headphones featuring active noise cancellation, 30-hour battery life, and comfortable over-ear design.", IsActive = true, IsFeatured = true, MinimumStockLevel = 10, RatingAverage = 4.5m, ReviewCount = 128 },
-                    new Product { Name = "Smart Watch Pro", Slug = "smart-watch-pro", SKU = "ELEC-002", Price = 4999.00m, CostPrice = 3000.00m, CategoryId = electronics.Id, ShortDescription = "Advanced smartwatch with health monitoring", Description = "Track your fitness and stay connected with our advanced smartwatch featuring heart rate monitoring, GPS, and water resistance.", IsActive = true, IsFeatured = true, MinimumStockLevel = 5, RatingAverage = 4.3m, ReviewCount = 89 },
-                    new Product { Name = "Portable Power Bank 20000mAh", Slug = "power-bank-20000mah", SKU = "ELEC-003", Price = 1299.00m, CostPrice = 700.00m, CategoryId = electronics.Id, ShortDescription = "High capacity portable charger", Description = "Never run out of battery with this 20000mAh power bank featuring fast charging support.", IsActive = true, IsFeatured = false, MinimumStockLevel = 15, RatingAverage = 4.1m, ReviewCount = 256 },
-                    new Product { Name = "USB-C Hub Adapter", Slug = "usb-c-hub-adapter", SKU = "ELEC-004", Price = 899.00m, CostPrice = 500.00m, CategoryId = electronics.Id, ShortDescription = "Multi-port USB-C hub", Description = "Expand your laptop's connectivity with this 7-in-1 USB-C hub.", IsActive = true, IsFeatured = false, MinimumStockLevel = 20, RatingAverage = 4.0m, ReviewCount = 67 },
+                new Product { Name = "Wireless Bluetooth Headphones", Slug = "wireless-bluetooth-headphones", SKU = "ELEC-001", Price = 2499.00m, CostPrice = 1500.00m, CategoryId = electronics.Id, ShortDescription = "Premium wireless headphones with noise cancellation", Description = "Experience high-quality sound with our premium wireless Bluetooth headphones featuring active noise cancellation, 30-hour battery life, and comfortable over-ear design.", IsActive = true, IsFeatured = true, MinimumStockLevel = 10, RatingAverage = 4.5m, ReviewCount = 128 },
+                new Product { Name = "Smart Watch Pro", Slug = "smart-watch-pro", SKU = "ELEC-002", Price = 4999.00m, CostPrice = 3000.00m, CategoryId = electronics.Id, ShortDescription = "Advanced smartwatch with health monitoring", Description = "Track your fitness and stay connected with our advanced smartwatch featuring heart rate monitoring, GPS, and water resistance.", IsActive = true, IsFeatured = true, MinimumStockLevel = 5, RatingAverage = 4.3m, ReviewCount = 89 },
+                new Product { Name = "Portable Power Bank 20000mAh", Slug = "power-bank-20000mah", SKU = "ELEC-003", Price = 1299.00m, CostPrice = 700.00m, CategoryId = electronics.Id, ShortDescription = "High capacity portable charger", Description = "Never run out of battery with this 20000mAh power bank featuring fast charging support.", IsActive = true, IsFeatured = false, MinimumStockLevel = 15, RatingAverage = 4.1m, ReviewCount = 256 },
+                new Product { Name = "USB-C Hub Adapter", Slug = "usb-c-hub-adapter", SKU = "ELEC-004", Price = 899.00m, CostPrice = 500.00m, CategoryId = electronics.Id, ShortDescription = "Multi-port USB-C hub", Description = "Expand your laptop's connectivity with this 7-in-1 USB-C hub.", IsActive = true, IsFeatured = false, MinimumStockLevel = 20, RatingAverage = 4.0m, ReviewCount = 67 },
 
-                    new Product { Name = "Premium Cotton T-Shirt", Slug = "premium-cotton-tshirt", SKU = "CLOTH-001", Price = 599.00m, CostPrice = 300.00m, CategoryId = clothing.Id, ShortDescription = "Soft and comfortable cotton t-shirt", Description = "Stay comfortable with our premium cotton t-shirt, perfect for everyday wear.", IsActive = true, IsFeatured = true, MinimumStockLevel = 25, RatingAverage = 4.6m, ReviewCount = 342 },
-                    new Product { Name = "Denim Jeans Classic", Slug = "denim-jeans-classic", SKU = "CLOTH-002", Price = 1599.00m, CostPrice = 800.00m, CategoryId = clothing.Id, ShortDescription = "Classic fit denim jeans", Description = "Timeless style with our classic fit denim jeans made from premium quality denim.", IsActive = true, IsFeatured = true, MinimumStockLevel = 15, RatingAverage = 4.4m, ReviewCount = 178 },
-                    new Product { Name = "Sports Running Shoes", Slug = "sports-running-shoes", SKU = "CLOTH-003", Price = 2999.00m, CostPrice = 1800.00m, CategoryId = clothing.Id, ShortDescription = "Lightweight running shoes", Description = "Enhance your performance with our lightweight running shoes featuring cushioned soles.", IsActive = true, IsFeatured = false, MinimumStockLevel = 10, RatingAverage = 4.7m, ReviewCount = 421 },
+                new Product { Name = "Premium Cotton T-Shirt", Slug = "premium-cotton-tshirt", SKU = "CLOTH-001", Price = 599.00m, CostPrice = 300.00m, CategoryId = clothing.Id, ShortDescription = "Soft and comfortable cotton t-shirt", Description = "Stay comfortable with our premium cotton t-shirt, perfect for everyday wear.", IsActive = true, IsFeatured = true, MinimumStockLevel = 25, RatingAverage = 4.6m, ReviewCount = 342 },
+                new Product { Name = "Denim Jeans Classic", Slug = "denim-jeans-classic", SKU = "CLOTH-002", Price = 1599.00m, CostPrice = 800.00m, CategoryId = clothing.Id, ShortDescription = "Classic fit denim jeans", Description = "Timeless style with our classic fit denim jeans made from premium quality denim.", IsActive = true, IsFeatured = true, MinimumStockLevel = 15, RatingAverage = 4.4m, ReviewCount = 178 },
+                new Product { Name = "Sports Running Shoes", Slug = "sports-running-shoes", SKU = "CLOTH-003", Price = 2999.00m, CostPrice = 1800.00m, CategoryId = clothing.Id, ShortDescription = "Lightweight running shoes", Description = "Enhance your performance with our lightweight running shoes featuring cushioned soles.", IsActive = true, IsFeatured = false, MinimumStockLevel = 10, RatingAverage = 4.7m, ReviewCount = 421 },
 
-                    new Product { Name = "LED Desk Lamp", Slug = "led-desk-lamp", SKU = "HOME-001", Price = 1299.00m, CostPrice = 700.00m, CategoryId = home.Id, ShortDescription = "Adjustable LED desk lamp", Description = "Brighten your workspace with our adjustable LED desk lamp featuring multiple brightness levels.", IsActive = true, IsFeatured = true, MinimumStockLevel = 10, RatingAverage = 4.2m, ReviewCount = 156 },
-                    new Product { Name = "Memory Foam Pillow", Slug = "memory-foam-pillow", SKU = "HOME-002", Price = 899.00m, CostPrice = 450.00m, CategoryId = home.Id, ShortDescription = "Ergonomic memory foam pillow", Description = "Enjoy a comfortable sleep with our ergonomic memory foam pillow.", IsActive = true, IsFeatured = false, MinimumStockLevel = 20, RatingAverage = 4.5m, ReviewCount = 234 },
-                    new Product { Name = "Indoor Plant Set", Slug = "indoor-plant-set", SKU = "HOME-003", Price = 1499.00m, CostPrice = 800.00m, CategoryId = home.Id, ShortDescription = "Set of 3 indoor plants", Description = "Add greenery to your home with this beautiful set of 3 easy-care indoor plants.", IsActive = true, IsFeatured = true, MinimumStockLevel = 8, RatingAverage = 4.8m, ReviewCount = 89 },
+                new Product { Name = "LED Desk Lamp", Slug = "led-desk-lamp", SKU = "HOME-001", Price = 1299.00m, CostPrice = 700.00m, CategoryId = home.Id, ShortDescription = "Adjustable LED desk lamp", Description = "Brighten your workspace with our adjustable LED desk lamp featuring multiple brightness levels.", IsActive = true, IsFeatured = true, MinimumStockLevel = 10, RatingAverage = 4.2m, ReviewCount = 156 },
+                new Product { Name = "Memory Foam Pillow", Slug = "memory-foam-pillow", SKU = "HOME-002", Price = 899.00m, CostPrice = 450.00m, CategoryId = home.Id, ShortDescription = "Ergonomic memory foam pillow", Description = "Enjoy a comfortable sleep with our ergonomic memory foam pillow.", IsActive = true, IsFeatured = false, MinimumStockLevel = 20, RatingAverage = 4.5m, ReviewCount = 234 },
+                new Product { Name = "Indoor Plant Set", Slug = "indoor-plant-set", SKU = "HOME-003", Price = 1499.00m, CostPrice = 800.00m, CategoryId = home.Id, ShortDescription = "Set of 3 indoor plants", Description = "Add greenery to your home with this beautiful set of 3 easy-care indoor plants.", IsActive = true, IsFeatured = true, MinimumStockLevel = 8, RatingAverage = 4.8m, ReviewCount = 89 },
 
-                    new Product { Name = "Yoga Mat Premium", Slug = "yoga-mat-premium", SKU = "SPORT-001", Price = 799.00m, CostPrice = 400.00m, CategoryId = sports.Id, ShortDescription = "Non-slip yoga mat", Description = "Perfect for your yoga practice with our non-slip premium yoga mat.", IsActive = true, IsFeatured = false, MinimumStockLevel = 15, RatingAverage = 4.3m, ReviewCount = 198 },
-                    new Product { Name = "Adjustable Dumbbells Set", Slug = "adjustable-dumbbells-set", SKU = "SPORT-002", Price = 4999.00m, CostPrice = 3000.00m, CategoryId = sports.Id, ShortDescription = "Space-saving adjustable dumbbells", Description = "Build your home gym with our adjustable dumbbells set ranging from 2kg to 20kg.", IsActive = true, IsFeatured = true, MinimumStockLevel = 5, RatingAverage = 4.6m, ReviewCount = 145 },
+                new Product { Name = "Yoga Mat Premium", Slug = "yoga-mat-premium", SKU = "SPORT-001", Price = 799.00m, CostPrice = 400.00m, CategoryId = sports.Id, ShortDescription = "Non-slip yoga mat", Description = "Perfect for your yoga practice with our non-slip premium yoga mat.", IsActive = true, IsFeatured = false, MinimumStockLevel = 15, RatingAverage = 4.3m, ReviewCount = 198 },
+                new Product { Name = "Adjustable Dumbbells Set", Slug = "adjustable-dumbbells-set", SKU = "SPORT-002", Price = 4999.00m, CostPrice = 3000.00m, CategoryId = sports.Id, ShortDescription = "Space-saving adjustable dumbbells", Description = "Build your home gym with our adjustable dumbbells set ranging from 2kg to 20kg.", IsActive = true, IsFeatured = true, MinimumStockLevel = 5, RatingAverage = 4.6m, ReviewCount = 145 },
 
-                    new Product { Name = "Programming Masterclass", Slug = "programming-masterclass", SKU = "BOOK-001", Price = 499.00m, CostPrice = 250.00m, CategoryId = books.Id, ShortDescription = "Learn programming from scratch", Description = "Master programming with this comprehensive guide covering multiple languages.", IsActive = true, IsFeatured = false, MinimumStockLevel = 10, RatingAverage = 4.9m, ReviewCount = 567 },
-                    new Product { Name = "Business Strategy Guide", Slug = "business-strategy-guide", SKU = "BOOK-002", Price = 399.00m, CostPrice = 200.00m, CategoryId = books.Id, ShortDescription = "Essential business strategies", Description = "Learn essential business strategies for success in today's market.", IsActive = true, IsFeatured = false, MinimumStockLevel = 10, RatingAverage = 4.4m, ReviewCount = 234 },
-                };
+                new Product { Name = "Programming Masterclass", Slug = "programming-masterclass", SKU = "BOOK-001", Price = 499.00m, CostPrice = 250.00m, CategoryId = books.Id, ShortDescription = "Learn programming from scratch", Description = "Master programming with this comprehensive guide covering multiple languages.", IsActive = true, IsFeatured = false, MinimumStockLevel = 10, RatingAverage = 4.9m, ReviewCount = 567 },
+                new Product { Name = "Business Strategy Guide", Slug = "business-strategy-guide", SKU = "BOOK-002", Price = 399.00m, CostPrice = 200.00m, CategoryId = books.Id, ShortDescription = "Essential business strategies", Description = "Learn essential business strategies for success in today's market.", IsActive = true, IsFeatured = false, MinimumStockLevel = 10, RatingAverage = 4.4m, ReviewCount = 234 },
+            };
 
-                context.Products.AddRange(products);
-                await context.SaveChangesAsync();
-            }
+            context.Products.AddRange(products);
+            await context.SaveChangesAsync();
         }
     }
 }

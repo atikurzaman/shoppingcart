@@ -56,6 +56,7 @@ export interface Category {
   imageUrl?: string
   isFeatured: boolean
   productCount: number
+  subCategories?: Category[]
 }
 
 export interface PagedResult<T> {
@@ -179,6 +180,11 @@ export const categoryService = {
 
   getFeaturedCategories: async (): Promise<Category[]> => {
     const { data } = await api.get('/categories/featured')
+    return data.data
+  },
+
+  getCategoryTree: async (): Promise<Category[]> => {
+    const { data } = await api.get('/categories/tree')
     return data.data
   },
 
