@@ -28,6 +28,9 @@ public static class DependencyInjection
         services.AddScoped<IReportService, Services.ReportService>();
         services.AddScoped<ISettingsService, Services.SettingsService>();
         services.AddScoped<IProcurementService, Services.ProcurementService>();
+        services.AddScoped<IMarketingService, Services.MarketingService>();
+        services.AddScoped<ICatalogMetadataService, Services.CatalogMetadataService>();
+        services.AddScoped<ISupportService, Services.SupportService>();
 
         return services;
     }

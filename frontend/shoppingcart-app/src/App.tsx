@@ -26,6 +26,22 @@ import AdminPayments from './pages/admin/Payments'
 import AdminCoupons from './pages/admin/Coupons'
 import AdminReports from './pages/admin/Reports'
 import AdminPurchaseOrders from './pages/admin/PurchaseOrders'
+import AdminFlashDeals from './pages/admin/FlashDeals'
+import AdminNewsletters from './pages/admin/Newsletters'
+import AdminUnits from './pages/admin/Units'
+import AdminShippingConfig from './pages/admin/ShippingConfig'
+import AdminCollections from './pages/admin/Collections'
+import AdminAttributes from './pages/admin/Attributes'
+import AdminColors from './pages/admin/Colors'
+import AdminTags from './pages/admin/Tags'
+import AdminSupport from './pages/admin/Support'
+import AdminMarketingBulk from './pages/admin/MarketingBulk'
+import AdminUsers from './pages/admin/Users'
+import AdminSettings from './pages/admin/Settings'
+import AdminPlaceholder from './pages/admin/Placeholder'
+import AdminBlogs from './pages/admin/Blogs'
+import AdminBlogWrite from './pages/admin/BlogWrite'
+import AdminSellers from './pages/admin/Sellers'
 import ProtectedRoute from './components/common/ProtectedRoute'
 import { useAppSelector, useAppDispatch } from './hooks/useStore'
 import { checkAuth } from './store/authSlice'
@@ -76,6 +92,24 @@ function App() {
         <Route path="coupons" element={<AdminCoupons />} />
         <Route path="reports" element={<AdminReports />} />
         <Route path="purchase-orders" element={<AdminPurchaseOrders />} />
+        <Route path="flash-deals" element={<AdminFlashDeals />} />
+        <Route path="newsletters" element={<AdminNewsletters />} />
+        <Route path="units" element={<AdminUnits />} />
+        <Route path="shipping-config" element={<AdminShippingConfig />} />
+        <Route path="collections" element={<AdminCollections />} />
+        <Route path="attributes" element={<AdminAttributes />} />
+        <Route path="colors" element={<AdminColors />} />
+        <Route path="tags" element={<AdminTags />} />
+        <Route path="support" element={<AdminSupport />} />
+        <Route path="marketing-bulk" element={<AdminMarketingBulk />} />
+        <Route path="users" element={<AdminUsers />} />
+        <Route path="settings" element={<AdminSettings />} />
+        <Route path="blogs" element={<AdminBlogs />} />
+        <Route path="blogs/write" element={<AdminBlogWrite />} />
+        <Route path="sellers" element={<AdminSellers />} />
+        
+        {/* Wildcard Fallback for all newly mapped Kartly menus (Blogs, Pages, Wallet, Sellers, Media, etc) */}
+        <Route path="*" element={<AdminPlaceholder />} />
       </Route>
     </Routes>
   )

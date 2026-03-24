@@ -109,115 +109,140 @@ export default function AdminProducts() {
         </button>
       </div>
 
-      <div className="card">
-        <div className="p-4 border-b border-gray-200">
-          <div className="flex items-center gap-4">
+      <div className="card-premium overflow-hidden">
+        <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-white">
+          <div className="flex items-center gap-6 flex-1">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Search products by name or SKU..."
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value)
                   setPageIndex(0)
                 }}
-                className="input pl-10"
+                className="w-full pl-12 pr-4 py-3 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-primary-100 transition-all text-sm font-medium"
               />
             </div>
-            <select className="input w-auto">
-              <option>All Categories</option>
-              <option>Electronics</option>
-              <option>Clothing</option>
-              <option>Home</option>
-            </select>
-            <select className="input w-auto">
-              <option>All Status</option>
-              <option>Active</option>
-              <option>Inactive</option>
-            </select>
+            <div className="flex items-center gap-3">
+              <select className="bg-gray-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-gray-600 focus:ring-2 focus:ring-primary-100">
+                <option>All Categories</option>
+                {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+              <select className="bg-gray-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-gray-600 focus:ring-2 focus:ring-primary-100">
+                <option>All Stocks</option>
+                <option>In Stock</option>
+                <option>Low Stock</option>
+                <option>Out of Stock</option>
+              </select>
+            </div>
           </div>
         </div>
 
         <div className="overflow-x-auto">
           {isLoading ? (
-            <div className="p-8 text-center text-gray-500">Loading products...</div>
+            <div className="p-20 text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+              <p className="mt-4 text-gray-500 font-medium">Loading products...</p>
+            </div>
           ) : products.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">No products found</div>
+            <div className="p-20 text-center">
+              <div className="bg-gray-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Package className="w-10 h-10 text-gray-300" />
+              </div>
+              <h4 className="text-lg font-bold text-gray-900">No products found</h4>
+              <p className="text-gray-500">Try adjusting your search or filters.</p>
+            </div>
           ) : (
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className="bg-[#FAFAFA]">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">SKU</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stock</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                  <th className="px-8 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest">Product Information</th>
+                  <th className="px-8 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest">SKU</th>
+                  <th className="px-8 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest">Pricing</th>
+                  <th className="px-8 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest">Inventory</th>
+                  <th className="px-8 py-4 text-left text-xs font-black text-gray-400 uppercase tracking-widest">Status</th>
+                  <th className="px-8 py-4 text-right text-xs font-black text-gray-400 uppercase tracking-widest">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-gray-50">
                 {products.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gray-200 rounded-lg overflow-hidden">
-                          {product.mainImageUrl && (
+                  <tr key={product.id} className="hover:bg-gray-50/50 transition-colors group">
+                    <td className="px-8 py-5">
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 bg-gray-100 rounded-2xl overflow-hidden border border-gray-100 flex-shrink-0 group-hover:border-primary-200 transition-colors">
+                          {product.mainImageUrl ? (
                             <img src={product.mainImageUrl} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-300">
+                                <Package className="w-6 h-6" />
+                            </div>
                           )}
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">{product.name}</p>
-                          <div className="flex flex-wrap gap-1 mt-1">
+                          <p className="font-bold text-gray-900 group-hover:text-primary-600 transition-colors">{product.name}</p>
+                          <p className="text-xs text-gray-400 font-bold mt-0.5">{product.categoryName}</p>
+                          <div className="flex gap-1.5 mt-2">
                             {product.isFeatured && (
-                              <span className="text-[10px] bg-primary-50 text-primary-600 px-1.5 py-0.5 rounded font-medium border border-primary-100">Featured</span>
-                            )}
-                            {product.isBestSeller && (
-                              <span className="text-[10px] bg-orange-50 text-orange-600 px-1.5 py-0.5 rounded font-medium border border-orange-100">Best Seller</span>
+                                <span className="px-2 py-0.5 rounded-md bg-yellow-50 text-[10px] font-black text-yellow-600 border border-yellow-100 uppercase tracking-tighter">Featured</span>
                             )}
                             {product.isNewArrival && (
-                              <span className="text-[10px] bg-green-50 text-green-600 px-1.5 py-0.5 rounded font-medium border border-green-100">New Arrival</span>
+                                <span className="px-2 py-0.5 rounded-md bg-blue-50 text-[10px] font-black text-blue-600 border border-blue-100 uppercase tracking-tighter">New</span>
                             )}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{product.sku || '-'}</td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{product.categoryName}</td>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">{formatPrice(product.price)}</td>
-                    <td className="px-6 py-4">
-                      <span className={`text-sm ${
-                        product.stockQuantity === 0 ? 'text-red-600' : 
-                        product.stockQuantity < 10 ? 'text-yellow-600' : 'text-gray-900'
-                      }`}>
-                        {product.stockQuantity}
-                      </span>
+                    <td className="px-8 py-5">
+                      <span className="text-xs font-black text-gray-400 bg-gray-100 px-2 py-1 rounded-lg tracking-wider">{product.sku || 'N/A'}</span>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className={`badge ${
-                        product.stockStatus === 'InStock' ? 'badge-success' : 
-                        product.stockStatus === 'LowStock' ? 'badge-warning' : 'badge-danger'
+                    <td className="px-8 py-5">
+                      <p className="text-sm font-black text-gray-900">{formatPrice(product.price)}</p>
+                    </td>
+                    <td className="px-8 py-5">
+                      <div className="flex flex-col">
+                        <span className={`text-sm font-black ${
+                            product.stockQuantity === 0 ? 'text-red-500' : 
+                            product.stockQuantity < 10 ? 'text-orange-500' : 'text-gray-900'
+                        }`}>
+                            {product.stockQuantity} Units
+                        </span>
+                        <div className="w-20 h-1.5 bg-gray-100 rounded-full mt-2 overflow-hidden">
+                            <div 
+                                className={`h-full rounded-full ${
+                                    product.stockQuantity === 0 ? 'bg-red-500' : 
+                                    product.stockQuantity < 10 ? 'bg-orange-500' : 'bg-green-500'
+                                }`} 
+                                style={{ width: `${Math.min(100, (product.stockQuantity / 50) * 100)}%` }}
+                            />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-8 py-5">
+                      <span className={`px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-wider ${
+                        product.stockStatus === 'InStock' ? 'bg-green-100 text-green-700' : 
+                        product.stockStatus === 'LowStock' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'
                       }`}>
                         {product.stockStatus === 'InStock' ? 'Active' : product.stockStatus === 'LowStock' ? 'Low Stock' : 'Out of Stock'}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
+                    <td className="px-8 py-5 text-right">
+                      <div className="flex items-center justify-end gap-1">
                         <button 
                           onClick={() => { setSelectedProduct(product); setShowVariantModal(true); }}
-                          className="p-1 text-gray-400 hover:text-primary-600" 
+                          className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all" 
                           title="Manage Variants"
                         >
                           <Layers className="h-5 w-5" />
                         </button>
-                        <button className="p-1 text-gray-400 hover:text-primary-600">
+                        <button className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all">
                           <Eye className="h-5 w-5" />
                         </button>
-                        <button className="p-1 text-gray-400 hover:text-primary-600">
+                        <button className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-all">
                           <Edit className="h-5 w-5" />
                         </button>
-                        <button className="p-1 text-gray-400 hover:text-red-600">
+                        <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all">
                           <Trash2 className="h-5 w-5" />
                         </button>
                       </div>

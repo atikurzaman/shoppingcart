@@ -67,3 +67,26 @@ public class ActivityLog : AuditableEntity<int>
 
     public virtual User User { get; set; } = null!;
 }
+
+public class SupportTicket : AuditableEntity<int>
+{
+    public string TicketNumber { get; set; } = string.Empty;
+    public int? UserId { get; set; }
+    public string Subject { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public string Priority { get; set; } = "Low"; // Low, Medium, High
+    public string Status { get; set; } = "Open"; // Open, Pending, Resolved, Closed
+    public string? AdminNote { get; set; }
+
+    public virtual User? User { get; set; }
+    public virtual ICollection<SupportTicketMessage> Messages { get; set; } = new List<SupportTicketMessage>();
+}
+
+public class SupportTicketMessage : AuditableEntity<int>
+{
+    public int SupportTicketId { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public bool IsFromAdmin { get; set; } = false;
+
+    public virtual SupportTicket SupportTicket { get; set; } = null!;
+}

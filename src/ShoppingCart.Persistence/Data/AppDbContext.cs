@@ -27,6 +27,9 @@ public class AppDbContext : DbContext
     public DbSet<ProductAttributeValue> ProductAttributeValues => Set<ProductAttributeValue>();
     public DbSet<Tag> Tags => Set<Tag>();
     public DbSet<ProductTag> ProductTags => Set<ProductTag>();
+    public DbSet<Unit> Units => Set<Unit>();
+    public DbSet<ProductCollection> ProductCollections => Set<ProductCollection>();
+    public DbSet<ProductCollectionItem> ProductCollectionItems => Set<ProductCollectionItem>();
 
     public DbSet<Warehouse> Warehouses => Set<Warehouse>();
     public DbSet<StockItem> StockItems => Set<StockItem>();
@@ -40,6 +43,9 @@ public class AppDbContext : DbContext
     public DbSet<CartItem> CartItems => Set<CartItem>();
     public DbSet<Wishlist> Wishlists => Set<Wishlist>();
     public DbSet<WishlistItem> WishlistItems => Set<WishlistItem>();
+    public DbSet<ShippingCarrier> ShippingCarriers => Set<ShippingCarrier>();
+    public DbSet<PickupPoint> PickupPoints => Set<PickupPoint>();
+    public DbSet<PaymentMethodMaster> PaymentMethodMasters => Set<PaymentMethodMaster>();
 
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
@@ -57,15 +63,38 @@ public class AppDbContext : DbContext
     public DbSet<PurchaseOrderItem> PurchaseOrderItems => Set<PurchaseOrderItem>();
     public DbSet<GoodsReceipt> GoodsReceipts => Set<GoodsReceipt>();
     public DbSet<GoodsReceiptItem> GoodsReceiptItems => Set<GoodsReceiptItem>();
+    public DbSet<FlashDeal> FlashDeals => Set<FlashDeal>();
+    public DbSet<FlashDealProduct> FlashDealProducts => Set<FlashDealProduct>();
+    public DbSet<NewsletterSubscription> NewsletterSubscriptions => Set<NewsletterSubscription>();
+    public DbSet<Color> Colors => Set<Color>();
 
     public DbSet<Review> Reviews => Set<Review>();
     public DbSet<ReviewHelpfulness> ReviewHelpfulness => Set<ReviewHelpfulness>();
 
     public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<SupportTicket> SupportTickets => Set<SupportTicket>();
+    public DbSet<SupportTicketMessage> SupportTicketMessages => Set<SupportTicketMessage>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     public DbSet<AppSetting> AppSettings => Set<AppSetting>();
     public DbSet<EmailTemplate> EmailTemplates => Set<EmailTemplate>();
     public DbSet<ActivityLog> ActivityLogs => Set<ActivityLog>();
+
+    // CMS & Content
+    public DbSet<Blog> Blogs => Set<Blog>();
+    public DbSet<BlogCategory> BlogCategories => Set<BlogCategory>();
+    public DbSet<BlogTag> BlogTags => Set<BlogTag>();
+    public DbSet<BlogTagMapping> BlogTagMappings => Set<BlogTagMapping>();
+    public DbSet<BlogComment> BlogComments => Set<BlogComment>();
+    public DbSet<StaticPage> StaticPages => Set<StaticPage>();
+    public DbSet<MediaAsset> MediaAssets => Set<MediaAsset>();
+    public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
+    public DbSet<SearchHistory> SearchHistories => Set<SearchHistory>();
+
+    // Multivendor & Wallet
+    public DbSet<Seller> Sellers => Set<Seller>();
+    public DbSet<Wallet> Wallets => Set<Wallet>();
+    public DbSet<WalletTransaction> WalletTransactions => Set<WalletTransaction>();
+    public DbSet<RefundRequest> RefundRequests => Set<RefundRequest>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

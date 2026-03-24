@@ -191,7 +191,7 @@ public class PaymentService : IPaymentService
         };
     }
 
-    public async Task<PaymentDto> ProcessRefundAsync(int adminId, RefundRequest request)
+    public async Task<PaymentDto> ProcessRefundAsync(int adminId, ShoppingCart.Application.DTOs.Payments.RefundRequest request)
     {
         var payment = await _context.Payments
             .Include(p => p.Order)

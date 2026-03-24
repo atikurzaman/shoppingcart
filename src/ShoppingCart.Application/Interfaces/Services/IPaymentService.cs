@@ -15,6 +15,6 @@ public interface IPaymentService
     // Admin
     Task<PagedResult<PaymentListDto>> GetAllPaymentsAsync(int pageIndex, int pageSize, string? status = null);
     Task<PaymentSummaryDto> GetPaymentSummaryAsync();
-    Task<PaymentDto> ProcessRefundAsync(int adminId, RefundRequest request);
+    Task<PaymentDto> ProcessRefundAsync(int adminId, ShoppingCart.Application.DTOs.Payments.RefundRequest request);
     Task<List<PaymentDto>> GetPaymentHistoryAsync(int customerId);
 }

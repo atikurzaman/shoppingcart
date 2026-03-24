@@ -18,7 +18,7 @@ public static class SeedData
             await context.Database.MigrateAsync();
         }
 
-        if (!await context.Users.AnyAsync())
+        if (!await context.Users.AnyAsync(u => u.Email == "admin@example.com"))
         {
             var adminRole = context.Roles.FirstOrDefault(r => r.Name == "Admin");
             if (adminRole == null)
@@ -46,13 +46,13 @@ public static class SeedData
 
             var adminUser = new User
             {
-                Email = "admin@shoppingcart.com",
+                Email = "admin@example.com",
                 FirstName = "Admin",
                 LastName = "User",
                 PhoneNumber = "+880 1700000000",
                 EmailConfirmed = true,
                 Status = UserStatus.Active,
-                PasswordHash = HashPassword("Admin123!")
+                PasswordHash = HashPassword("111111")
             };
 
             context.Users.Add(adminUser);

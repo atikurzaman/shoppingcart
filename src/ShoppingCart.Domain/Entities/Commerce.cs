@@ -101,3 +101,31 @@ public class WishlistItem : AuditableEntity<int>
     public virtual Product Product { get; set; } = null!;
     public virtual ProductVariant? Variant { get; set; }
 }
+
+public class ShippingCarrier : AuditableEntity<int>
+{
+    public string Name { get; set; } = string.Empty;
+    public string? LogoUrl { get; set; }
+    public string? TrackingUrlPrefix { get; set; }
+    public bool IsActive { get; set; } = true;
+    public decimal BaseCost { get; set; }
+}
+
+public class PickupPoint : AuditableEntity<int>
+{
+    public string Name { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public string City { get; set; } = string.Empty;
+    public string Phone { get; set; } = string.Empty;
+    public bool IsActive { get; set; } = true;
+}
+
+public class PaymentMethodMaster : AuditableEntity<int>
+{
+    public string Name { get; set; } = string.Empty;
+    public string Provider { get; set; } = string.Empty;
+    public string? LogoUrl { get; set; }
+    public string? ConfigurationJson { get; set; }
+    public bool IsActive { get; set; } = true;
+    public bool IsLiveMode { get; set; } = false;
+}

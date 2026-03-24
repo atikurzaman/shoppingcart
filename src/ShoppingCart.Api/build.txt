@@ -1,0 +1,34 @@
+﻿  Determining projects to restore...
+c:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.AspNetCore.SignalR will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary. [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+c:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.Extensions.Configuration.Abstractions will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary. [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+  All projects are up-to-date for restore.
+c:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.AspNetCore.SignalR will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.
+c:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.Extensions.Configuration.Abstractions will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.
+  ShoppingCart.Domain -> c:\AI\shoppingcart\src\ShoppingCart.Domain\bin\Debug\net10.0\ShoppingCart.Domain.dll
+  ShoppingCart.Persistence -> c:\AI\shoppingcart\src\ShoppingCart.Persistence\bin\Debug\net10.0\ShoppingCart.Persistence.dll
+  ShoppingCart.Shared -> c:\AI\shoppingcart\src\ShoppingCart.Shared\bin\Debug\net10.0\ShoppingCart.Shared.dll
+  ShoppingCart.Application -> c:\AI\shoppingcart\src\ShoppingCart.Application\bin\Debug\net10.0\ShoppingCart.Application.dll
+  ShoppingCart.Infrastructure -> c:\AI\shoppingcart\src\ShoppingCart.Infrastructure\bin\Debug\net10.0\ShoppingCart.Infrastructure.dll
+c:\AI\shoppingcart\src\ShoppingCart.Api\Controllers\CmsController.cs(26,39): error CS0117: 'ApiResponse<object>' does not contain a definition for 'SuccessResponse' [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+c:\AI\shoppingcart\src\ShoppingCart.Api\Controllers\CmsController.cs(34,37): error CS0117: 'ApiResponse<Blog>' does not contain a definition for 'SuccessResponse' [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+c:\AI\shoppingcart\src\ShoppingCart.Api\Controllers\CmsController.cs(41,39): error CS0117: 'ApiResponse<object>' does not contain a definition for 'SuccessResponse' [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+c:\AI\shoppingcart\src\ShoppingCart.Api\Controllers\CmsController.cs(49,43): error CS0117: 'ApiResponse<StaticPage>' does not contain a definition for 'SuccessResponse' [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+c:\AI\shoppingcart\src\ShoppingCart.Api\Controllers\VendorsController.cs(26,39): error CS0117: 'ApiResponse<object>' does not contain a definition for 'SuccessResponse' [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+c:\AI\shoppingcart\src\ShoppingCart.Api\Controllers\VendorsController.cs(34,39): error CS0117: 'ApiResponse<Seller>' does not contain a definition for 'SuccessResponse' [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+
+Build FAILED.
+
+c:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.AspNetCore.SignalR will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary. [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+c:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.Extensions.Configuration.Abstractions will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary. [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+c:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.AspNetCore.SignalR will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.
+c:\AI\shoppingcart\src\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj : warning NU1510: PackageReference Microsoft.Extensions.Configuration.Abstractions will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.
+c:\AI\shoppingcart\src\ShoppingCart.Api\Controllers\CmsController.cs(26,39): error CS0117: 'ApiResponse<object>' does not contain a definition for 'SuccessResponse' [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+c:\AI\shoppingcart\src\ShoppingCart.Api\Controllers\CmsController.cs(34,37): error CS0117: 'ApiResponse<Blog>' does not contain a definition for 'SuccessResponse' [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+c:\AI\shoppingcart\src\ShoppingCart.Api\Controllers\CmsController.cs(41,39): error CS0117: 'ApiResponse<object>' does not contain a definition for 'SuccessResponse' [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+c:\AI\shoppingcart\src\ShoppingCart.Api\Controllers\CmsController.cs(49,43): error CS0117: 'ApiResponse<StaticPage>' does not contain a definition for 'SuccessResponse' [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+c:\AI\shoppingcart\src\ShoppingCart.Api\Controllers\VendorsController.cs(26,39): error CS0117: 'ApiResponse<object>' does not contain a definition for 'SuccessResponse' [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+c:\AI\shoppingcart\src\ShoppingCart.Api\Controllers\VendorsController.cs(34,39): error CS0117: 'ApiResponse<Seller>' does not contain a definition for 'SuccessResponse' [c:\AI\shoppingcart\src\ShoppingCart.Api\ShoppingCart.Api.csproj]
+    4 Warning(s)
+    6 Error(s)
+
+Time Elapsed 00:00:04.31

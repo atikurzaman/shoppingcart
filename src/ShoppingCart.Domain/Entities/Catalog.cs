@@ -20,6 +20,15 @@ public class Category : AuditableEntity<int>
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }
 
+public class Unit : AuditableEntity<int>
+{
+    public string Name { get; set; } = string.Empty; // e.g., Piece, Kg, Ltr, Box
+    public string? ShortName { get; set; }
+    public bool IsActive { get; set; } = true;
+
+    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+}
+
 public class Brand : AuditableEntity<int>
 {
     public string Name { get; set; } = string.Empty;
@@ -63,6 +72,9 @@ public class Product : AuditableEntity<int>
     public int CategoryId { get; set; }
     public int? BrandId { get; set; }
     public int? SupplierId { get; set; }
+    public int? UnitId { get; set; }
+    public int? SellerId { get; set; }
+    public string? Condition { get; set; } // e.g., New, Used, Refurbished
     public bool IsFeatured { get; set; } = false;
     public bool IsBestSeller { get; set; } = false;
     public bool IsNewArrival { get; set; } = false;
@@ -78,6 +90,8 @@ public class Product : AuditableEntity<int>
     public virtual Category Category { get; set; } = null!;
     public virtual Brand? Brand { get; set; }
     public virtual Supplier? Supplier { get; set; }
+    public virtual Seller? Seller { get; set; }
+    public virtual Unit? Unit { get; set; }
     public virtual ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
     public virtual ICollection<ProductVariant> Variants { get; set; } = new List<ProductVariant>();
     public virtual ICollection<ProductAttributeValue> AttributeValues { get; set; } = new List<ProductAttributeValue>();
@@ -154,4 +168,35 @@ public class ProductTag : AuditableEntity<int>
 
     public virtual Product Product { get; set; } = null!;
     public virtual Tag Tag { get; set; } = null!;
+}
+
+public class ProductCollection : AuditableEntity<int>
+{
+    public string Name { get; set; } = string.Empty;
+    public string Slug { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public string? ImageUrl { get; set; }
+    public bool IsActive { get; set; } = true;
+    public bool ShowInHomePage { get; set; } = true;
+
+    public virtual ICollection<ProductCollectionItem> Items { get; set; } = new List<ProductCollectionItem>();
+}
+
+public class ProductCollectionItem : AuditableEntity<int>
+{
+    public int ProductCollectionId { get; set; }
+    public int ProductId { get; set; }
+    public int DisplayOrder { get; set; } = 0;
+
+    public virtual ProductCollection Collection { get; set; } = null!;
+    public virtual Product Product { get; set; } = null!;
+}
+
+public class Color : AuditableEntity<int>
+{
+    public string Name { get; set; } = string.Empty;
+    public string? HexCode { get; set; }
+    public bool IsActive { get; set; } = true;
+
+    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }

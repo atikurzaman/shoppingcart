@@ -62,10 +62,12 @@ public class OrderItem : AuditableEntity<int>
     public decimal TotalPrice { get; set; }
     public decimal TotalCost { get; set; }
     public string? Notes { get; set; }
+    public int? SellerId { get; set; }
 
     public virtual Order Order { get; set; } = null!;
     public virtual Product Product { get; set; } = null!;
     public virtual ProductVariant? Variant { get; set; }
+    public virtual Seller? Seller { get; set; }
 }
 
 public class Payment : AuditableEntity<int>

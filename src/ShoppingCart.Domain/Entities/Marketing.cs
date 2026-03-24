@@ -115,3 +115,34 @@ public class GoodsReceiptItem : AuditableEntity<int>
 
     public virtual GoodsReceipt GoodsReceipt { get; set; } = null!;
 }
+
+public class FlashDeal : AuditableEntity<int>
+{
+    public string Title { get; set; } = string.Empty;
+    public string Slug { get; set; } = string.Empty;
+    public string? ImageUrl { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public bool IsActive { get; set; } = true;
+    public bool ShowInHomePage { get; set; } = true;
+
+    public virtual ICollection<FlashDealProduct> Products { get; set; } = new List<FlashDealProduct>();
+}
+
+public class FlashDealProduct : AuditableEntity<int>
+{
+    public int FlashDealId { get; set; }
+    public int ProductId { get; set; }
+    public decimal DiscountAmount { get; set; }
+    public DiscountType DiscountType { get; set; }
+
+    public virtual FlashDeal FlashDeal { get; set; } = null!;
+    public virtual Product Product { get; set; } = null!;
+}
+
+public class NewsletterSubscription : AuditableEntity<int>
+{
+    public string Email { get; set; } = string.Empty;
+    public bool IsActive { get; set; } = true;
+    public DateTime SubscribedAt { get; set; } = DateTime.UtcNow;
+}
