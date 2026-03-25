@@ -12,6 +12,7 @@ import Account from './pages/customer/Account'
 import Orders from './pages/customer/Orders'
 import Wishlist from './pages/customer/Wishlist'
 import Checkout from './pages/customer/Checkout'
+import FlashDeal from './pages/customer/FlashDeal'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminProducts from './pages/admin/Products'
 import AdminOrders from './pages/admin/Orders'
@@ -71,6 +72,7 @@ function App() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/deals/flash-deal" element={<FlashDeal />} />
       </Route>
 
       <Route path="/admin" element={

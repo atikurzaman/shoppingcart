@@ -40,15 +40,16 @@ export default function Header() {
       <div className="bg-white border-b border-gray-100 hidden lg:block">
         <div className="container mx-auto px-4 h-9 flex items-center justify-between text-xs text-gray-500">
           <div className="flex items-center gap-6">
-            <span>Order Tracking</span>
-            <Link to="/seller-signup" className="hover:text-primary-600">Become a Seller</Link>
+            <span className="cursor-pointer hover:text-primary-600">ENGLISH</span>
+            <span className="cursor-pointer hover:text-primary-600">USD</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Mail className="h-3 w-3" />
-            <span>info@shopcart.com</span>
+          <div className="flex items-center gap-6">
+            <span className="cursor-pointer hover:text-primary-600">ORDER TRACKING</span>
+            <Link to="/seller-signup" className="hover:text-primary-600 font-medium">BECOME A SELLER</Link>
           </div>
         </div>
       </div>
+
 
       {/* ── Main bar ─────────────────────────────────────────── */}
       <div className="bg-white py-4 sticky top-0 z-50 border-b border-gray-100">
@@ -147,18 +148,18 @@ export default function Header() {
       </div>
 
       {/* ── Nav bar ─────────────────────────────────────────── */}
-      <div className="bg-nav hidden lg:block relative z-40">
-        <div className="container mx-auto px-4 h-11 flex items-center">
-          {/* All Categories */}
+      <div className="bg-white border-b border-gray-100 hidden lg:block relative z-40">
+        <div className="container mx-auto px-4 h-12 flex items-center">
+          {/* All Categories button */}
           <div className="relative group">
             <button
-              className="h-11 px-5 flex items-center gap-3 text-sm font-semibold text-white bg-nav hover:bg-white/10 transition-colors min-w-[200px]"
+              className="h-12 px-5 flex items-center gap-3 text-sm font-bold text-white bg-primary-600 hover:bg-primary-700 transition-colors min-w-[215px]"
               onClick={() => setIsCatOpen(!isCatOpen)}
             >
-              <span className="flex flex-col gap-0.5">
-                <span className="block w-4 h-0.5 bg-white"></span>
-                <span className="block w-4 h-0.5 bg-white"></span>
-                <span className="block w-4 h-0.5 bg-white"></span>
+              <span className="flex flex-col gap-[3px]">
+                <span className="block w-[18px] h-0.5 bg-white"></span>
+                <span className="block w-[18px] h-0.5 bg-white"></span>
+                <span className="block w-[18px] h-0.5 bg-white"></span>
               </span>
               ALL CATEGORIES
             </button>
@@ -166,7 +167,7 @@ export default function Header() {
             {/* Mega dropdown */}
             <div className="absolute top-full left-0 w-[820px] bg-white shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 border border-gray-100 flex">
               {/* L1 */}
-              <div className="w-[200px] border-r border-gray-100 py-2 bg-gray-50">
+              <div className="w-[215px] border-r border-gray-100 py-2 bg-gray-50">
                 {categoryTree?.map((root) => (
                   <div
                     key={root.id}
@@ -208,10 +209,10 @@ export default function Header() {
           </div>
 
           {/* Nav links */}
-          <nav className="flex items-center h-11 ml-4">
+          <nav className="flex items-center h-12 ml-2">
             {[
               { label: 'Home', to: '/' },
-              { label: 'Flash Deal', to: '/products?featured=true' },
+              { label: 'Flash Deal', to: '/deals/flash-deal' },
               { label: 'All Products', to: '/products' },
               { label: 'Seller Shop', to: '/sellers' },
               { label: 'Compare', to: '/compare' },
@@ -221,12 +222,18 @@ export default function Header() {
               <Link
                 key={link.to}
                 to={link.to}
-                className="text-white/90 hover:text-white text-sm font-medium px-4 h-full flex items-center hover:bg-white/10 transition-colors"
+                className="text-gray-700 hover:text-primary-600 text-sm font-medium px-4 h-full flex items-center hover:bg-gray-50 transition-colors"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
+
+          {/* Info email — right side */}
+          <div className="ml-auto flex items-center gap-2 text-sm text-gray-500">
+            <Mail className="h-3.5 w-3.5" />
+            <span>info@shopcart.com</span>
+          </div>
         </div>
       </div>
 
